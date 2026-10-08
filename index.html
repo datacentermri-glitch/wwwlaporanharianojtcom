@@ -1,0 +1,3016 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full bg-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MRI OJT Daily Report — PT. Minum Rempah Indonesia</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        mri: {
+                            50: '#fef2f2',
+                            100: '#ffe1e1',
+                            200: '#fcc8c8',
+                            300: '#f89e9e',
+                            400: '#f36868',
+                            500: '#e83b3b',
+                            600: '#dc2626', // Primary MRI Red
+                            700: '#b91c1c',
+                            800: '#991b1b', // Deep Red Brand
+                            900: '#7f1d1d',
+                            950: '#450a0a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #fca5a5;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #dc2626;
+        }
+        body {
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-slate-800 bg-slate-100 min-h-full flex flex-col">
+
+    <header class="bg-gradient-to-r from-mri-950 via-mri-900 to-rose-950 text-white shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3 flex flex-col md:flex-row md:items-center justify-between gap-3">
+            
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2.5 sm:space-x-3">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center shadow-inner shrink-0">
+                        <i class="fa-solid fa-mug-hot text-amber-300 text-lg sm:text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-black text-sm sm:text-lg tracking-tight leading-none text-white flex flex-wrap items-center gap-1.5">
+                            PT. MINUM REMPAH INDONESIA
+                            <span class="text-[9px] sm:text-[10px] bg-amber-400 text-mri-950 font-black px-1.5 sm:px-2 py-0.5 rounded-full uppercase tracking-wider">OJT System</span>
+                        </h1>
+                        <p class="text-[11px] sm:text-xs text-mri-100 font-medium tracking-wide mt-0.5">People Development Center</p>
+                    </div>
+                </div>
+
+                <!-- Admin Status Mobile Badge -->
+                <div id="admin-unlocked-badge-mobile" class="md:hidden hidden items-center space-x-1 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-lg text-[10px] font-bold">
+                    <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+                    <span>Admin</span>
+                </div>
+            </div>
+
+            <!-- MAIN PAGE VIEW TABS NAV -->
+            <div class="flex items-center justify-between sm:justify-end space-x-1.5 sm:space-x-2 overflow-x-auto pb-1 md:pb-0">
+                <div class="flex bg-mri-950/80 p-1 rounded-xl border border-white/10 text-[11px] sm:text-xs font-bold shrink-0">
+                    <button id="nav-btn-laporan" onclick="switchMainView('laporan')" class="px-2.5 sm:px-3 py-1.5 rounded-lg transition flex items-center space-x-1.5 bg-mri-600 text-white shadow whitespace-nowrap">
+                        <i class="fa-solid fa-pen-to-square text-amber-300"></i>
+                        <span>Laporan Harian</span>
+                    </button>
+                    <button id="nav-btn-panduan" onclick="switchMainView('panduan')" class="px-2.5 sm:px-3 py-1.5 rounded-lg transition flex items-center space-x-1.5 text-mri-100 hover:text-white hover:bg-white/10 whitespace-nowrap">
+                        <i class="fa-solid fa-map-location-dot text-amber-300"></i>
+                        <span>Panduan & Memo</span>
+                    </button>
+                    <button id="nav-btn-dashboard" onclick="handleDashboardNavClick()" class="px-2.5 sm:px-3 py-1.5 rounded-lg transition flex items-center space-x-1.5 text-mri-100 hover:text-white hover:bg-white/10 whitespace-nowrap">
+                        <i class="fa-solid fa-chart-line text-amber-300"></i>
+                        <span>Dashboard Admin</span>
+                    </button>
+                </div>
+
+                <!-- LIVE FIREBASE CONNECTION BADGE -->
+                <div id="firebase-status-badge" class="flex items-center space-x-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-1 rounded-xl text-[10px] sm:text-xs font-bold shrink-0">
+                    <span id="firebase-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span id="firebase-status-text">Firebase Live</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RUNNING BANNER INSTRUCTION -->
+        <div class="bg-mri-950 text-white/90 text-xs py-1 px-3 sm:px-4 border-t border-white/10 flex items-center">
+            <span class="shrink-0 font-extrabold text-amber-300 uppercase text-[9px] sm:text-[10px] tracking-wider px-1.5 py-0.5 bg-amber-400/10 rounded mr-2 border border-amber-400/20">
+                <i class="fa-solid fa-bullhorn mr-1"></i> Pengumuman PDC:
+            </span>
+            <marquee id="running-banner-text" class="font-medium text-amber-100 text-[11px] sm:text-xs">
+                Selamat Datang di Sistem Laporan Harian OJT PT. Minum Rempah Indonesia. Kirimkan Laporan Awal saat tiba & Laporan Akhir sebelum pulang!
+            </marquee>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-2.5 sm:px-6 lg:px-8 py-3 sm:py-5 space-y-4 sm:space-y-5">
+
+        <!-- VIEW 1: LAPORAN HARIAN OJT (DEFAULT VIEW) -->
+        <div id="view-laporan" class="space-y-4 sm:space-y-5">
+
+            <!-- LIVE REALTIME SUBMISSION STATUS CARD -->
+            <section class="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200 shadow-sm space-y-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+                    <div>
+                        <h2 class="font-black text-slate-900 text-xs sm:text-base flex items-center">
+                            <i class="fa-solid fa-signal text-mri-600 mr-2 animate-pulse"></i> Status Pengiriman Laporan Hari Ini (Real-Time)
+                        </h2>
+                        <p class="text-[11px] sm:text-xs text-slate-500">Pantau secara langsung siapa yang sudah atau belum mengirimkan laporan Awal/Akhir shift hari ini.</p>
+                    </div>
+                    <div class="text-left sm:text-right font-mono text-[11px] sm:text-xs shrink-0">
+                        <span id="realtime-day" class="font-bold text-mri-700">--</span>, 
+                        <span id="realtime-date" class="text-slate-600">--/--/----</span> | 
+                        <span id="realtime-clock" class="font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded border">00:00:00 WIB</span>
+                    </div>
+                </div>
+
+                <!-- LIVE STATUS GRID -->
+                <div id="live-submission-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-2.5">
+                    <!-- Injected dynamically via JS -->
+                </div>
+            </section>
+
+            <!-- FORM UTAMA LAPORAN OJT -->
+            <section class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
+
+                <!-- LEFT COLUMN: INPUT FORM & CHECKLISTS (8 COLS) -->
+                <div class="lg:col-span-8 space-y-4">
+
+                    <!-- INFORMASI DIRI & OJT STATUS -->
+                    <div class="bg-white rounded-2xl p-3.5 sm:p-5 border border-slate-200 shadow-sm space-y-3.5">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                            <h3 class="font-black text-slate-900 text-xs sm:text-base flex items-center">
+                                <i class="fa-solid fa-id-card text-mri-700 mr-2"></i> Identitas Crew OJT & Masa Bergabung (1-90 Hari)
+                            </h3>
+                            <span class="text-[10px] sm:text-xs bg-mri-50 text-mri-800 font-extrabold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full border border-mri-200">Wajib Diisi</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div>
+                                <label class="font-bold text-slate-700 block mb-1">Pilih Nama Karyawan OJT:</label>
+                                <select id="select-trainee" onchange="onTraineeChange(false)" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-mri-500 focus:outline-none">
+                                    <option value="" disabled selected>-- Pilih Nama Karyawan OJT --</option>
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
+                            <div>
+                                <label class="font-bold text-slate-700 block mb-1">Tujuan WhatsApp Laporan:</label>
+                                <select id="wa-target-select" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-mri-500 focus:outline-none">
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- CARD MONITORING HARI & PERIODE OJT (1-90) -->
+                        <div class="p-3.5 bg-gradient-to-r from-mri-950 via-mri-900 to-slate-900 text-white rounded-xl space-y-2 shadow">
+                            <div class="flex flex-wrap items-center justify-between text-xs gap-2">
+                                <div>
+                                    <span class="text-amber-300 font-black text-[10px] uppercase block tracking-wider">Status Masa Bergabung OJT</span>
+                                    <span id="days-count-ojt" class="font-black text-sm sm:text-base text-white">Silakan Pilih Karyawan</span>
+                                </div>
+                                <div class="text-right">
+                                    <span id="current-phase-label" class="bg-amber-400/20 text-amber-300 border border-amber-400/30 font-bold text-[11px] px-2.5 py-1 rounded-lg">Fase: --</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2 text-[11px] pt-1.5 border-t border-white/10 font-mono">
+                                <div>
+                                    <span class="text-slate-300 block">Tanggal Mulai Bergabung:</span>
+                                    <strong id="date-start-ojt" class="text-emerald-400 font-extrabold">--/--/----</strong>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-slate-300 block">Tanggal Selesai (Hari ke-90):</span>
+                                    <strong id="date-end-ojt" class="text-amber-300 font-extrabold">--/--/----</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SHIFT MODE SWITCHER (AWAL / AKHIR) -->
+                    <div class="flex rounded-2xl bg-slate-200 p-1 border border-slate-300 text-xs font-black shadow-inner">
+                        <button id="tab-btn-awal" onclick="switchShiftMode('awal')" class="flex-1 py-2.5 sm:py-3 rounded-xl transition flex items-center justify-center space-x-1.5 sm:space-x-2 bg-mri-700 text-white shadow">
+                            <i class="fa-solid fa-sun text-amber-300 text-xs sm:text-sm"></i>
+                            <span>1. LAPORAN AWAL SHIFT</span>
+                        </button>
+                        <button id="tab-btn-akhir" onclick="switchShiftMode('akhir')" class="flex-1 py-2.5 sm:py-3 rounded-xl transition flex items-center justify-center space-x-1.5 sm:space-x-2 text-slate-700 hover:text-slate-900">
+                            <i class="fa-solid fa-moon text-indigo-400 text-xs sm:text-sm"></i>
+                            <span>2. LAPORAN AKHIR SHIFT</span>
+                        </button>
+                    </div>
+
+                    <!-- FORM INPUTS LAPORAN AWAL SHIFT -->
+                    <div id="form-awal-section" class="bg-white rounded-2xl p-3.5 sm:p-5 border border-slate-200 shadow-sm space-y-4 text-xs">
+                        
+                        <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl space-y-1">
+                            <span class="font-black text-amber-900 flex items-center text-xs">
+                                <i class="fa-solid fa-bullseye text-mri-600 mr-1.5"></i> Target & Fokus Utama Shift Hari Ini:
+                            </span>
+                            <p id="awal-target-focus-text" class="text-slate-700 font-medium text-[11px] leading-relaxed">
+                                Memahami alur dasar operasional outlet, mengenali seluruh bar tools, dan melayani pelanggan dengan senyum, sapa, salam, sopan, santun (5S).
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="font-bold text-slate-700 block mb-1">Jam Datang / Start Shift:</label>
+                                <input type="time" id="awal-time" onchange="generateWAPreview()" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-mono text-slate-900 font-bold focus:ring-2 focus:ring-mri-500">
+                            </div>
+                            <div>
+                                <label class="font-bold text-slate-700 block mb-1">Kesiapan Grooming & Seragam Rapi:</label>
+                                <select id="awal-grooming" onchange="generateWAPreview()" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-800">
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- MANDATORY MANUAL REPORT TEXTAREA (AWAL SHIFT) -->
+                        <div class="space-y-1">
+                            <label class="font-bold text-slate-900 flex items-center">
+                                <i class="fa-solid fa-pen-nib text-mri-700 mr-1.5"></i> Isian Penugasan / Rencana Kerja Awal Shift (Bobot 40% KPI):
+                                <span class="ml-auto text-[10px] text-mri-700 bg-mri-100 px-2 py-0.5 rounded font-black">Wajib Diisi</span>
+                            </label>
+                            <textarea id="awal-penugasan-text" rows="3" oninput="generateWAPreview()" placeholder="Tuliskan detail rencana penugasan, pembagian station, dan target kerja yang akan Anda lakukan di shift ini..." class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-mri-500 focus:outline-none font-medium"></textarea>
+                        </div>
+
+                        <!-- FEEDBACK AWAL SHIFT -->
+                        <div class="space-y-1">
+                            <label class="font-bold text-slate-700 block">
+                                <i class="fa-solid fa-comment-dots text-amber-600 mr-1.5"></i> Feedback Ke PDC / Catatan Awal Shift:
+                            </label>
+                            <textarea id="awal-feedback-text" rows="2" oninput="generateWAPreview()" placeholder="Tuliskan catatan kondisi awal outlet atau masukan awal untuk PDC / Captain..." class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-mri-500 focus:outline-none font-medium"></textarea>
+                        </div>
+
+                        <!-- Custom Questions Awal Shift -->
+                        <div id="custom-questions-awal-container" class="space-y-3"></div>
+
+                        <!-- SHOLAT 5 WAKTU AWAL SHIFT -->
+                        <div class="p-3 bg-rose-50 rounded-xl border border-rose-200 space-y-2">
+                            <label class="font-bold text-mri-900 block"><i class="fa-solid fa-mosque mr-1.5 text-mri-600"></i> Komitmen Sholat Wajib 5 Waktu Hari Ini (Bobot 20% KPI):</label>
+                            <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5 text-[11px]">
+                                <label class="flex items-center space-x-1.5 p-2 bg-white rounded-lg border border-rose-200 cursor-pointer font-bold text-slate-800 hover:bg-rose-100">
+                                    <input type="checkbox" id="sholat-subuh" onchange="toggleSholat('subuh')" class="rounded text-mri-700 focus:ring-mri-500">
+                                    <span>Subuh</span>
+                                </label>
+                                <label class="flex items-center space-x-1.5 p-2 bg-white rounded-lg border border-rose-200 cursor-pointer font-bold text-slate-800 hover:bg-rose-100">
+                                    <input type="checkbox" id="sholat-dzuhur" onchange="toggleSholat('dzuhur')" class="rounded text-mri-700 focus:ring-mri-500">
+                                    <span>Dzuhur</span>
+                                </label>
+                                <label class="flex items-center space-x-1.5 p-2 bg-white rounded-lg border border-rose-200 cursor-pointer font-bold text-slate-800 hover:bg-rose-100">
+                                    <input type="checkbox" id="sholat-ashar" onchange="toggleSholat('ashar')" class="rounded text-mri-700 focus:ring-mri-500">
+                                    <span>Ashar</span>
+                                </label>
+                                <label class="flex items-center space-x-1.5 p-2 bg-white rounded-lg border border-rose-200 cursor-pointer font-bold text-slate-800 hover:bg-rose-100">
+                                    <input type="checkbox" id="sholat-maghrib" onchange="toggleSholat('maghrib')" class="rounded text-mri-700 focus:ring-mri-500">
+                                    <span>Maghrib</span>
+                                </label>
+                                <label class="flex items-center space-x-1.5 p-2 bg-white rounded-lg border border-rose-200 cursor-pointer font-bold text-slate-800 hover:bg-rose-100 col-span-2 sm:col-span-1">
+                                    <input type="checkbox" id="sholat-isya" onchange="toggleSholat('isya')" class="rounded text-mri-700 focus:ring-mri-500">
+                                    <span>Isya</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FORM INPUTS LAPORAN AKHIR SHIFT -->
+                    <div id="form-akhir-section" class="bg-white rounded-2xl p-3.5 sm:p-5 border border-slate-200 shadow-sm space-y-4 text-xs hidden">
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="font-bold text-slate-700 block mb-1">Jam Selesai Shift / Closing:</label>
+                                <input type="time" id="akhir-time" onchange="generateWAPreview()" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-mono text-slate-900 font-bold focus:ring-2 focus:ring-mri-500">
+                            </div>
+                            <div>
+                                <label class="font-bold text-slate-700 block mb-1">Kondisi Kebersihan Outlet & Closing Bar:</label>
+                                <select id="akhir-kebersihan" onchange="generateWAPreview()" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-800">
+                                    <option value="Sangat Bersih & Kinclong Sesuai SOP Closing">Sangat Bersih & Rapi Sesuai SOP Closing</option>
+                                    <option value="Cukup Bersih (Ada Catatan Kecil Captain)">Cukup Bersih (Ada Catatan Kecil Captain)</option>
+                                    <option value="Kurang Bersih (Kena Teguran Captain)">Kurang Bersih (Kena Teguran Captain)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- MANDATORY MANUAL REPORT TEXTAREA (AKHIR SHIFT) -->
+                        <div class="space-y-1">
+                            <label class="font-bold text-slate-900 flex items-center">
+                                <i class="fa-solid fa-file-pen text-mri-700 mr-1.5"></i> Isian Penugasan / Ringkasan Hasil Kerja Akhir Shift (Bobot 40% KPI):
+                                <span class="ml-auto text-[10px] text-mri-700 bg-mri-100 px-2 py-0.5 rounded font-black">Wajib Diisi</span>
+                            </label>
+                            <textarea id="akhir-penugasan-text" rows="3" oninput="generateWAPreview()" placeholder="Tuliskan rincian tugas yang berhasil dilaksanakan hari ini, hasil omzet/penjualan, dan evaluasi singkat..." class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-mri-500 focus:outline-none font-medium"></textarea>
+                        </div>
+
+                        <!-- SHOLAT 5 WAKTU AKHIR SHIFT SYNCED -->
+                        <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-200 space-y-2">
+                            <label class="font-bold text-indigo-900 block"><i class="fa-solid fa-mosque mr-1.5 text-indigo-600"></i> Rekap Sholat 5 Waktu Terlaksana Hari Ini (Akhir Shift):</label>
+                            <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5 text-[11px]">
+                                <label class="flex items-center space-x-1.5 p-2 bg-white rounded-lg border border-indigo-200 cursor-pointer font-bold text-slate-800 hover:bg-indigo-100">
+                                    <input type="checkbox" id="sholat-subuh-akhir" onchange="toggleSholat('subuh')" class="rounded text-mri-700 focus:ring-mri-500">
+                                    <span>Subuh</span>
+                                </label>
+                                <label class="flex items-center space-x-1.5 p-2 bg-white rounded-lg border border-indigo-200 cursor-pointer font-bold text-slate-800 hover:bg-indigo-100">
+                                    <input type="checkbox" id="sholat-dzuhur-akhir" onchange="toggleSholat('dzuhur')" class="rounded text-mri-700 focus:ring-mri-500">
+                                    <span>Dzuhur</span>
+                                </label>
+                                <label class="flex items-center space-x-1.5 p-2 bg-white rounded-lg border border-indigo-200 cursor-pointer font-bold text-slate-800 hover:bg-indigo-100">
+                                    <input type="checkbox" id="sholat-ashar-akhir" onchange="toggleSholat('ashar')" class="rounded text-mri-700 focus:ring-mri-500">
+                                    <span>Ashar</span>
+                                </label>
+                                <label class="flex items-center space-x-1.5 p-2 bg-white rounded-lg border border-indigo-200 cursor-pointer font-bold text-slate-800 hover:bg-indigo-100">
+                                    <input type="checkbox" id="sholat-maghrib-akhir" onchange="toggleSholat('maghrib')" class="rounded text-mri-700 focus:ring-mri-500">
+                                    <span>Maghrib</span>
+                                </label>
+                                <label class="flex items-center space-x-1.5 p-2 bg-white rounded-lg border border-indigo-200 cursor-pointer font-bold text-slate-800 hover:bg-indigo-100 col-span-2 sm:col-span-1">
+                                    <input type="checkbox" id="sholat-isya-akhir" onchange="toggleSholat('isya')" class="rounded text-mri-700 focus:ring-mri-500">
+                                    <span>Isya</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">Catatan Hal Yang Terlewat / Kendala Hari Ini:</label>
+                            <textarea id="akhir-terlewat-notes" rows="2" oninput="generateWAPreview()" placeholder="Tuliskan kendala atau tugas yang belum sempat selesai hari ini..." class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-mri-500 focus:outline-none"></textarea>
+                        </div>
+
+                        <!-- AUTOMATIC TARGET HARI BESOK -->
+                        <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl space-y-1">
+                            <div class="flex items-center justify-between">
+                                <span class="font-black text-emerald-900 flex items-center text-xs">
+                                    <i class="fa-solid fa-circle-arrow-right text-emerald-600 mr-1.5"></i> Target Hari Besok (Next Shift Focus - Otomatis Kurikulum Roadmap):
+                                </span>
+                                <span id="next-day-badge" class="text-[10px] bg-emerald-200 text-emerald-900 font-extrabold px-2 py-0.5 rounded-full">Hari ke--</span>
+                            </div>
+                            <p id="akhir-target-besok-text" class="text-slate-800 font-bold text-[11px] leading-relaxed bg-white/80 p-2.5 rounded-lg border border-emerald-200/60 shadow-sm">
+                                Pilih Karyawan terlebih dahulu untuk melihat target kurikulum OJT...
+                            </p>
+                        </div>
+
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">Feedback Ke PDC / Evaluasi Captain:</label>
+                            <textarea id="akhir-captain-notes" rows="2" oninput="generateWAPreview()" placeholder="Tuliskan masukan untuk PDC dan evaluasi dari Captain..." class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-mri-500 focus:outline-none"></textarea>
+                        </div>
+
+                        <!-- Custom Questions Akhir Shift -->
+                        <div id="custom-questions-akhir-container" class="space-y-3"></div>
+                    </div>
+
+                    <!-- CHECKLIST TUGAS SESUAI HARI BERJALAN -->
+                    <div class="bg-white rounded-2xl p-3.5 sm:p-5 border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-2 gap-1">
+                            <h3 class="font-black text-slate-900 text-xs sm:text-base flex items-center">
+                                <i class="fa-solid fa-list-check text-mri-600 mr-2"></i> Checklist Target Tugas Hari Berjalan (Bobot 30% KPI)
+                            </h3>
+                            <span id="current-stage-badge" class="text-[10px] bg-mri-100 text-mri-900 font-extrabold px-2 py-0.5 rounded self-start sm:self-auto">Pilih Karyawan Dahulu</span>
+                        </div>
+
+                        <div id="tasks-container" class="divide-y divide-slate-100 border rounded-xl overflow-hidden bg-slate-50/50">
+                            <!-- Injected dynamically via JS -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT COLUMN: WA PREVIEW & DISPATCH (4 COLS) -->
+                <div class="lg:col-span-4 space-y-5">
+
+                    <!-- PREVIEW FORMAT WHATSAPP -->
+                    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm space-y-3 sticky top-20">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                            <h3 class="font-black text-slate-900 text-xs sm:text-sm flex items-center">
+                                <i class="fa-brands fa-whatsapp text-emerald-600 mr-2 text-base sm:text-lg"></i> Preview Laporan WA
+                            </h3>
+                            <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Auto Format</span>
+                        </div>
+
+                        <div id="wa-preview-box" class="p-3 bg-slate-900 text-emerald-400 font-mono text-[11px] rounded-xl leading-relaxed whitespace-pre-wrap max-h-96 overflow-y-auto custom-scrollbar border border-slate-800 shadow-inner">
+                            Silakan pilih nama karyawan OJT terlebih dahulu...
+                        </div>
+
+                        <button onclick="dispatchWhatsAppReport()" class="w-full py-3 sm:py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-lg hover:shadow-xl transition duration-200 flex items-center justify-center space-x-2 border border-emerald-500">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            <span>Kirim Laporan Ke WhatsApp Sekarang</span>
+                        </button>
+                        <p class="text-[10px] text-slate-400 text-center font-medium">Laporan akan tersimpan otomatis ke Database & dikirim ke WhatsApp.</p>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+        <div id="view-panduan" class="space-y-5 hidden">
+            
+            <div class="bg-gradient-to-r from-mri-950 via-mri-900 to-slate-900 text-white rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
+                <div class="flex items-center space-x-3 border-b border-white/10 pb-3">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-amber-400/20 border border-amber-400/30 flex items-center justify-center text-amber-300 text-xl sm:text-2xl font-black shrink-0">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-black text-sm sm:text-lg text-amber-300">Panduan Kurikulum & Roadmap Masa Bergabung OJT (1 - 90 Hari)</h2>
+                        <p class="text-[11px] sm:text-xs text-slate-300">Pedoman resmi standar kompetensi operasional PT. Minum Rempah Indonesia.</p>
+                    </div>
+                </div>
+
+                <!-- KALKULATOR ROADMAP INTERAKTIF -->
+                <div class="bg-white/10 p-3.5 sm:p-4 rounded-xl border border-white/20 space-y-3 text-xs">
+                    <label class="font-bold text-amber-300 block"><i class="fa-solid fa-calculator mr-1.5"></i> Cek Target Kompetensi Hari Ini:</label>
+                    <div class="flex flex-wrap gap-2">
+                        <input type="number" id="input-roadmap-day" min="1" max="90" value="1" placeholder="Hari (1-90)..." class="w-28 sm:w-32 p-2 bg-white text-slate-900 rounded-xl font-bold font-mono text-center">
+                        <button onclick="checkRoadmapDay()" class="px-4 py-2 bg-amber-400 hover:bg-amber-500 text-mri-950 font-black rounded-xl shadow">Tampilkan Target Hari Ini</button>
+                    </div>
+                    <div id="roadmap-day-result" class="p-3 bg-slate-900/80 rounded-xl border border-white/10 text-amber-100 hidden leading-relaxed">
+                        <!-- Result injected dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARDS STAGE ROADMAP 1-90 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                
+                <!-- STAGE 1 -->
+                <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <span class="bg-amber-100 text-amber-900 font-black px-2.5 py-1 rounded-lg">STAGE 1: HARI 1 - 3</span>
+                        <span class="font-bold text-slate-500">Fase Observasi & Orientasi</span>
+                    </div>
+                    <h4 class="font-black text-slate-900 text-sm">Pengenalan Dasar Bar & SOP Outlet</h4>
+                    <ul class="space-y-1.5 text-slate-700 list-disc list-inside">
+                        <li>Memahami alur dasar operasional opening dan closing outlet.</li>
+                        <li>Mengenal seluruh nama dan fungsi bar tools (jigger, shaker, timbangan, blender).</li>
+                        <li>Melayani pelanggan dengan Service Excellent 5S (Senyum, Sapa, Salam, Sopan, Santun).</li>
+                        <li>Kedisiplinan grooming, seragam rapi disetrika, dan tepat waktu.</li>
+                    </ul>
+                </div>
+
+                <!-- STAGE 2 -->
+                <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <span class="bg-emerald-100 text-emerald-900 font-black px-2.5 py-1 rounded-lg">STAGE 2: HARI 4 - 17</span>
+                        <span class="font-bold text-slate-500">Fase Station Kasir & Transaksi</span>
+                    </div>
+                    <h4 class="font-black text-slate-900 text-sm">Penguasaan Sistem POS ESB & Cashiering</h4>
+                    <ul class="space-y-1.5 text-slate-700 list-disc list-inside">
+                        <li>Menguasai input order pada mesin POS ESB tanpa salah pesanan.</li>
+                        <li>Cash handling, transaksi QRIS, EDC, dan rekap modal kasir.</li>
+                        <li>Teknik upselling natural menu signature minuman rempah.</li>
+                        <li>Menjaga kebersihan dan ketertiban area kasir.</li>
+                    </ul>
+                </div>
+
+                <!-- STAGE 3 -->
+                <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <span class="bg-indigo-100 text-indigo-900 font-black px-2.5 py-1 rounded-lg">STAGE 3: HARI 18 - 48</span>
+                        <span class="font-bold text-slate-500">Fase Station Racik & Speed Bar</span>
+                    </div>
+                    <h4 class="font-black text-slate-900 text-sm">Ketepatan Takaran Resep & Hygiene Bar</h4>
+                    <ul class="space-y-1.5 text-slate-700 list-disc list-inside">
+                        <li>Penyajikan racikan rempah presisi menggunakan timbangan digital SOP.</li>
+                        <li>Kecepatan penyajian minuman (Service Time &lt; 90 detik).</li>
+                        <li>Standar Hygiene, Food Safety, serta penerapan FIFO/FEFO bahan baku.</li>
+                        <li>Persiapan preparation rempah segar harian.</li>
+                    </ul>
+                </div>
+
+                <!-- STAGE 4 -->
+                <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <span class="bg-mri-100 text-mri-900 font-black px-2.5 py-1 rounded-lg">STAGE 4: HARI 48 - 90</span>
+                        <span class="font-bold text-slate-500">Fase Mandiri & Audit Kelulusan</span>
+                    </div>
+                    <h4 class="font-black text-slate-900 text-sm">Operasional Menyeluruh & Stock Opname</h4>
+                    <ul class="space-y-1.5 text-slate-700 list-disc list-inside">
+                        <li>Mampu rangkap tugas Kasir dan Racik Bar secara mandiri.</li>
+                        <li>Pelaksanaan Stock Opname fisik harian dan mingguan secara akurat.</li>
+                        <li>Peramalan order (forecasting) bahan baku ke central kitchen.</li>
+                        <li>Persiapan Audit Final Kelulusan Masa OJT 90 Hari oleh Operasional & PDC.</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- INTERNAL MEMO DIRECTORY -->
+            <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs">
+                <h3 class="font-black text-slate-900 text-sm flex items-center">
+                    <i class="fa-solid fa-scroll text-mri-700 mr-2"></i> Memo Internal People Development Center (PDC)
+                </h3>
+                <div class="p-4 bg-slate-50 rounded-xl border text-slate-700 leading-relaxed space-y-2">
+                    <p><strong>Subjek:</strong> Kepatuhan Laporan Harian OJT & Komitmen Sholat 5 Waktu</p>
+                    <p>1. Seluruh Crew OJT wajib mengirimkan <strong>Laporan Awal Shift</strong> maksimal 15 menit setelah tiba di outlet dan <strong>Laporan Akhir Shift</strong> sebelum meninggalkan outlet.</p>
+                    <p>2. Pelaksanaan Sholat 5 Waktu tepat waktu merupakan bagian dari penilaian karakter dan integritas kerja (bobot 20% KPI).</p>
+                    <p>3. Laporan Harian Dikerjakan Dengan Penuh Kejujuran & Tanggung Jawab Tanpa Terkecuali.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="view-dashboard" class="space-y-5 hidden">
+
+            <div class="bg-gradient-to-r from-mri-950 via-mri-900 to-slate-900 text-white rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
+                    <div>
+                        <h2 class="font-black text-sm sm:text-lg flex items-center text-amber-300">
+                            <i class="fa-solid fa-chart-line mr-2"></i> Dashboard Control & Diagnostic KPI OJT — Admin PDC
+                        </h2>
+                        <p class="text-[11px] sm:text-xs text-slate-300">Kelola master data, database log laporan, dan pantau akumulasi performa seluruh crew OJT</p>
+                    </div>
+                    <div>
+                        <button onclick="lockAdmin()" class="px-3 py-1.5 bg-mri-600 hover:bg-mri-700 text-white text-xs font-bold rounded-xl border border-mri-500 shadow">
+                            <i class="fa-solid fa-right-from-bracket mr-1"></i> Keluar Admin
+                        </button>
+                    </div>
+                </div>
+
+                <!-- FORMULA KETERANGAN KPI TERBARU -->
+                <div class="bg-white/5 p-3 rounded-xl border border-white/10 text-xs text-slate-300 space-y-1 font-mono">
+                    <span class="text-amber-300 font-bold block"><i class="fa-solid fa-calculator mr-1"></i> Formula Bobot Akumulasi KPI Crew OJT (Sesuai Standar PDC):</span>
+                    <p class="leading-relaxed text-[11px]">
+                        • <strong>40% Laporan Penugasan Harian</strong> (Kelengkapan teks laporan) | 
+                        • <strong>30% Ceklis Tugas Hari Berjalan</strong> | 
+                        • <strong>20% Sholat 5 Waktu</strong> | 
+                        • <strong>10% Kedisiplinan & Kerajinan Laporan Hari Ini</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- FIREBASE STORAGE & DATABASE DIAGNOSTICS CARD -->
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm space-y-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-2.5 gap-2">
+                    <h3 class="font-black text-slate-900 text-xs sm:text-base flex items-center">
+                        <i class="fa-solid fa-database text-amber-500 mr-2"></i> Indikator Storage & Sync Firebase Realtime
+                    </h3>
+                    <div class="flex items-center space-x-2">
+                        <span id="db-health-badge" class="text-[10px] bg-emerald-100 text-emerald-800 font-black px-2.5 py-1 rounded-full border border-emerald-300 flex items-center">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span> Firestore Connected
+                        </span>
+                        <button onclick="refreshFirebaseStats()" class="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-2.5 py-1 rounded-lg border">
+                            <i class="fa-solid fa-rotate mr-1"></i> Refresh Stats
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 text-xs font-mono">
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span class="text-slate-500 text-[10px] block uppercase font-bold">Total Karyawan OJT</span>
+                        <strong id="stat-count-trainees" class="text-sm sm:text-base text-slate-900 font-black">0 Orang</strong>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span class="text-slate-500 text-[10px] block uppercase font-bold">Total Outlet Terdaftar</span>
+                        <strong id="stat-count-outlets" class="text-sm sm:text-base text-slate-900 font-black">0 Outlet</strong>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span class="text-slate-500 text-[10px] block uppercase font-bold">Total Log Laporan</span>
+                        <strong id="stat-count-reports" class="text-sm sm:text-base text-mri-700 font-black">0 Dokumen</strong>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span class="text-slate-500 text-[10px] block uppercase font-bold">Storage Health</span>
+                        <strong class="text-xs text-emerald-600 font-black block">Active Syncing</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DATABASE LOGS SECTION -->
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm space-y-4">
+                <div class="border-b pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                        <h3 class="font-black text-slate-900 text-sm sm:text-base flex items-center">
+                            <i class="fa-solid fa-list-ul text-mri-700 mr-2"></i> Database Log Laporan OJT (Periode & Filter)
+                        </h3>
+                        <p class="text-xs text-slate-500">Seluruh data pengiriman laporan harian tersimpan di database. Gunakan filter periode untuk melihat, mengedit, atau menghapus data log.</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="confirmResetTodayReports()" class="px-3 py-1 bg-amber-100 hover:bg-amber-200 text-amber-900 font-black rounded-lg text-xs border border-amber-300">
+                            <i class="fa-solid fa-rotate-left mr-1"></i> Reset Status Laporan Hari Ini
+                        </button>
+                        <span id="log-count-badge" class="bg-mri-100 text-mri-800 font-black px-2.5 py-1 rounded-full text-xs">
+                            0 Log Ditemukan
+                        </span>
+                    </div>
+                </div>
+
+                <!-- FILTER PERIODE TANGGAL & CREW -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs">
+                    <div>
+                        <label class="font-bold text-slate-700 block mb-1"><i class="fa-solid fa-calendar-day mr-1 text-mri-700"></i> Tanggal Awal (Periode):</label>
+                        <input type="date" id="filter-log-start" onchange="renderDailyReportsLog()" class="w-full p-2 bg-white border rounded-xl font-bold font-mono text-slate-800">
+                    </div>
+                    <div>
+                        <label class="font-bold text-slate-700 block mb-1"><i class="fa-solid fa-calendar-check mr-1 text-mri-700"></i> Tanggal Akhir (Periode):</label>
+                        <input type="date" id="filter-log-end" onchange="renderDailyReportsLog()" class="w-full p-2 bg-white border rounded-xl font-bold font-mono text-slate-800">
+                    </div>
+                    <div>
+                        <label class="font-bold text-slate-700 block mb-1"><i class="fa-solid fa-filter mr-1 text-mri-700"></i> Filter Karyawan OJT:</label>
+                        <select id="filter-log-trainee" onchange="renderDailyReportsLog()" class="w-full p-2 bg-white border rounded-xl font-bold text-slate-800">
+                            <option value="ALL">Semua Karyawan</option>
+                            <!-- Injected -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- TABLE LOG LAPORAN HARIAN -->
+                <div class="overflow-x-auto border border-slate-200 rounded-2xl">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 font-extrabold uppercase text-[10px] border-b">
+                                <th class="p-3">Tanggal & Jam</th>
+                                <th class="p-3">Nama Crew & Outlet</th>
+                                <th class="p-3">Shift Mode</th>
+                                <th class="p-3">Ringkasan Laporan</th>
+                                <th class="p-3 text-center">Aksi (Edit / Hapus)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="daily-reports-log-table" class="divide-y divide-slate-100">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ANALYTICS GRID -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+                <!-- TOP 3 PODIUM & KLASEMEN -->
+                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 space-y-4 shadow-sm">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <h3 class="font-extrabold text-slate-900 text-xs sm:text-base flex items-center">
+                            <i class="fa-solid fa-crown text-amber-500 mr-2"></i> Klasemen Performance Crew OJT
+                        </h3>
+                        <span class="text-xs bg-amber-100 text-amber-900 font-bold px-2.5 py-1 rounded-full border border-amber-200">KPI Leaderboard</span>
+                    </div>
+
+                    <!-- Top 3 Podium -->
+                    <div id="podium-container" class="grid grid-cols-3 gap-2 pt-2 items-end text-center font-bold text-xs">
+                        <!-- Injected dynamically -->
+                    </div>
+
+                    <div id="crew-leaderboard-list" class="divide-y divide-slate-100 max-h-60 overflow-y-auto custom-scrollbar text-xs">
+                        <!-- Injected dynamically -->
+                    </div>
+                </div>
+
+                <!-- MATRIX CREW PALING RAJIN -->
+                <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 space-y-4 shadow-sm text-xs">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <h3 class="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center">
+                            <i class="fa-solid fa-fire text-mri-600 mr-2"></i> Matrix Tingkat Kedisiplinan (Paling Rajin Laporan - 10% KPI)
+                        </h3>
+                        <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full text-[10px]">Diligence Rank</span>
+                    </div>
+                    <div id="diligence-matrix-container" class="space-y-2.5 max-h-72 overflow-y-auto custom-scrollbar">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- MATRIX KELEBIHAN & KEKURANGAN KARYAWAN -->
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 space-y-4 shadow-sm text-xs">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <h3 class="font-extrabold text-slate-900 text-xs sm:text-base flex items-center">
+                        <i class="fa-solid fa-scale-balanced text-indigo-600 mr-2"></i> Matrix Analisa Kelebihan & Catatan Evaluasi Crew (SWOT Diagnostic)
+                    </h3>
+                    <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-full text-[10px]">SWOT Analysis</span>
+                </div>
+                <div id="swot-matrix-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-80 overflow-y-auto custom-scrollbar">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- MASTER DATA EDITING & MANAGEMENT -->
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm space-y-5">
+                <div class="border-b pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                        <h3 class="font-black text-slate-900 text-sm sm:text-base"><i class="fa-solid fa-sliders text-mri-700 mr-2"></i> Manajemen Master Data Sistem (Firebase Direct)</h3>
+                        <p class="text-xs text-slate-500">Kelola master outlet, captain, nomor WA, opsi grooming, dan pertanyaan custom dengan tombol Tambah, Edit, dan Hapus.</p>
+                    </div>
+                    <div>
+                        <button onclick="confirmResetDatabase()" class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 font-bold text-xs rounded-xl border border-red-300">
+                            <i class="fa-solid fa-trash-can mr-1"></i> Hapus Seluruh Database
+                        </button>
+                    </div>
+                </div>
+
+                <!-- EDIT BANNER PENGUMUMAN PDC SECTION -->
+                <div class="p-4 bg-amber-50 border border-amber-200 rounded-2xl space-y-3 text-xs">
+                    <div class="flex items-center justify-between">
+                        <label class="font-black text-amber-950 flex items-center text-sm">
+                            <i class="fa-solid fa-bullhorn text-amber-600 mr-2"></i> Pengumuman PDC / Edit Running Banner
+                        </label>
+                        <span class="text-[10px] bg-amber-200 text-amber-900 font-extrabold px-2 py-0.5 rounded-full">Banner Header</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                        <input type="text" id="input-banner-text" placeholder="Tuliskan instruksi pengumuman running banner..." class="flex-1 p-2.5 bg-white border border-amber-300 rounded-xl font-medium focus:ring-2 focus:ring-amber-500">
+                        <button onclick="saveBannerInstruction()" class="px-5 py-2.5 bg-mri-700 hover:bg-mri-800 text-white rounded-xl font-black shadow transition shrink-0">
+                            <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Pengumuman
+                        </button>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 pt-1">
+                        <span class="text-slate-500 text-[10px] font-bold">Preset Cepat:</span>
+                        <button onclick="setBannerPreset('Selamat Datang di Sistem Laporan Harian OJT PT. Minum Rempah Indonesia. Kirimkan Laporan Awal saat tiba & Laporan Akhir sebelum pulang!')" class="text-[10px] bg-white border border-amber-300 px-2 py-0.5 rounded hover:bg-amber-100">Standard</button>
+                        <button onclick="setBannerPreset('PENGUMUMAN PDC: Persiapan Audit Final Kelulusan OJT Periode Bulan Ini. Lengkapi seluruh checklist!')" class="text-[10px] bg-white border border-amber-300 px-2 py-0.5 rounded hover:bg-amber-100">Audit Final</button>
+                        <button onclick="setBannerPreset('REMINDER: Jaga Kebersihan Bar & Wajib Sholat 5 Waktu Tepat Waktu!')" class="text-[10px] bg-white border border-amber-300 px-2 py-0.5 rounded hover:bg-amber-100">SOP & Sholat</button>
+                    </div>
+                </div>
+
+                <!-- MASTER DATA GROOMING & PERTANYAAN CUSTOM GRID -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    
+                    <!-- GROOMING OPTIONS MASTER DATA -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <h4 class="font-bold text-slate-900"><i class="fa-solid fa-user-check text-mri-700 mr-1.5"></i> Kesiapan Grooming & Seragam Rapi</h4>
+                            <span id="badge-count-grooming" class="text-[10px] bg-mri-100 text-mri-800 font-bold px-2 py-0.5 rounded">0 Opsi</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <input type="text" id="input-new-grooming" placeholder="Tambah Opsi Grooming Baru..." class="flex-1 p-2 bg-white border rounded-xl">
+                            <button onclick="addGroomingOption()" class="px-3 py-2 bg-mri-700 text-white rounded-xl font-bold shadow hover:bg-mri-800">+</button>
+                        </div>
+                        <div id="grooming-list" class="divide-y divide-slate-200 max-h-48 overflow-y-auto custom-scrollbar bg-white rounded-xl p-2 border"></div>
+                    </div>
+
+                    <!-- CUSTOM QUESTIONS MASTER DATA -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <h4 class="font-bold text-slate-900"><i class="fa-solid fa-circle-question text-amber-600 mr-1.5"></i> Pertanyaan Custom Tambahan</h4>
+                            <span id="badge-count-questions" class="text-[10px] bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded">0 Pertanyaan</span>
+                        </div>
+                        <div class="space-y-1.5">
+                            <input type="text" id="input-question-text" placeholder="Tuliskan Pertanyaan Custom..." class="w-full p-2 bg-white border rounded-xl">
+                            <div class="flex space-x-2">
+                                <select id="input-question-shift" class="p-2 bg-white border rounded-xl font-bold text-slate-800 text-[11px]">
+                                    <option value="awal">Shift Awal</option>
+                                    <option value="akhir">Shift Akhir</option>
+                                </select>
+                                <input type="text" id="input-question-options" placeholder="Opsi Pilihan (pisahkan koma) / kosongkan utk teks..." class="flex-1 p-2 bg-white border rounded-xl text-[11px]">
+                                <button onclick="addCustomQuestion()" class="px-3 py-2 bg-amber-600 text-white rounded-xl font-bold shadow hover:bg-amber-700">+</button>
+                            </div>
+                        </div>
+                        <div id="custom-questions-admin-list" class="divide-y divide-slate-200 max-h-40 overflow-y-auto custom-scrollbar bg-white rounded-xl p-2 border"></div>
+                    </div>
+
+                </div>
+
+                <!-- OUTLETS, CAPTAINS, WA NUMBERS GRID -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    
+                    <!-- OUTLET MASTER DATA -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <h4 class="font-bold text-slate-900"><i class="fa-solid fa-store text-mri-700 mr-1.5"></i> Daftar Outlet PT. MRI</h4>
+                            <span id="badge-count-outlet" class="text-[10px] bg-mri-100 text-mri-800 font-bold px-2 py-0.5 rounded">0 Outlet</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <input type="text" id="input-new-outlet" placeholder="Nama Outlet Baru..." class="flex-1 p-2 bg-white border rounded-xl">
+                            <button onclick="addNewOutlet()" class="px-3 py-2 bg-mri-700 text-white rounded-xl font-bold shadow hover:bg-mri-800">+</button>
+                        </div>
+                        <div id="outlets-list" class="divide-y divide-slate-200 max-h-44 overflow-y-auto custom-scrollbar bg-white rounded-xl p-2 border"></div>
+                    </div>
+
+                    <!-- CAPTAIN MASTER DATA -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <h4 class="font-bold text-slate-900"><i class="fa-solid fa-user-ninja text-amber-600 mr-1.5"></i> Daftar Captain</h4>
+                            <span id="badge-count-captain" class="text-[10px] bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded">0 Captain</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <input type="text" id="input-new-captain" placeholder="Nama Captain Baru..." class="flex-1 p-2 bg-white border rounded-xl">
+                            <button onclick="addNewCaptain()" class="px-3 py-2 bg-amber-600 text-white rounded-xl font-bold shadow hover:bg-amber-700">+</button>
+                        </div>
+                        <div id="captains-list" class="divide-y divide-slate-200 max-h-44 overflow-y-auto custom-scrollbar bg-white rounded-xl p-2 border"></div>
+                    </div>
+
+                    <!-- WA NUMBERS MASTER DATA -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <h4 class="font-bold text-slate-900"><i class="fa-brands fa-whatsapp text-emerald-600 mr-1.5"></i> Nomor WA Tujuan</h4>
+                            <span id="badge-count-wa" class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">0 Nomor</span>
+                        </div>
+                        <div class="space-y-1.5">
+                            <input type="text" id="input-wa-label" placeholder="Label (ex: Arisandi PDC)..." class="w-full p-2 bg-white border rounded-xl">
+                            <div class="flex space-x-2">
+                                <input type="text" id="input-wa-phone" placeholder="62857..." class="flex-1 p-2 bg-white border rounded-xl font-mono">
+                                <button onclick="addNewWANumber()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl font-bold shadow hover:bg-emerald-700">+</button>
+                            </div>
+                        </div>
+                        <div id="wa-numbers-list" class="divide-y divide-slate-200 max-h-36 overflow-y-auto custom-scrollbar bg-white rounded-xl p-2 border"></div>
+                    </div>
+
+                </div>
+
+                <!-- FORM REGISTRASI KARYAWAN OJT BARU -->
+                <div class="bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3 text-xs">
+                    <h4 class="font-black text-slate-900 flex items-center text-sm">
+                        <i class="fa-solid fa-user-plus text-mri-700 mr-2"></i> Registrasi Karyawan OJT Baru (Auto Kalkulasi 90 Hari OJT)
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">Nama Lengkap Karyawan:</label>
+                            <input type="text" id="new-trainee-name" placeholder="Nama Karyawan..." class="w-full p-2.5 bg-white border rounded-xl font-bold">
+                        </div>
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">Cabang Outlet:</label>
+                            <select id="new-trainee-outlet" class="w-full p-2.5 bg-white border rounded-xl font-bold">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">Captain Penanggung Jawab:</label>
+                            <select id="new-trainee-captain" class="w-full p-2.5 bg-white border rounded-xl font-bold">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">Tanggal Mulai Bergabung:</label>
+                            <input type="date" id="new-trainee-startdate" class="w-full p-2.5 bg-white border rounded-xl font-bold font-mono">
+                        </div>
+                    </div>
+                    <div class="pt-2 flex justify-end">
+                        <button onclick="addNewTrainee()" class="px-5 py-2.5 bg-mri-700 hover:bg-mri-800 text-white font-black rounded-xl shadow transition">
+                            <i class="fa-solid fa-plus mr-1"></i> Daftarkan Karyawan OJT Baru
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TABLE MONITORING KARYAWAN OJT TERDAFTAR -->
+                <div class="space-y-3 text-xs">
+                    <h4 class="font-black text-slate-900 text-sm"><i class="fa-solid fa-users text-slate-700 mr-1.5"></i> Monitoring Data Karyawan OJT Terdaftar</h4>
+                    <div class="overflow-x-auto border border-slate-200 rounded-2xl">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 font-extrabold uppercase text-[10px] border-b">
+                                    <th class="p-3">Nama Karyawan</th>
+                                    <th class="p-3">Outlet</th>
+                                    <th class="p-3">Captain</th>
+                                    <th class="p-3">Tanggal Mulai</th>
+                                    <th class="p-3">Tanggal Selesai (90)</th>
+                                    <th class="p-3 text-center">Aksi Management</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trainees-admin-table" class="divide-y divide-slate-100">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- MODAL NOTIFICATION ALERT (REPLACING BROWSER ALERT) -->
+    <div id="modal-app-alert" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-xs w-full p-5 shadow-2xl border border-amber-200 text-center space-y-3 text-xs">
+            <div class="w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-lg font-black">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 id="app-alert-title" class="font-black text-slate-900 text-sm">Pemberitahuan Sistem</h3>
+            <p id="app-alert-message" class="text-slate-600 leading-relaxed font-medium">Pesan peringatan...</p>
+            <button onclick="closeAppAlertModal()" class="w-full py-2 bg-mri-700 hover:bg-mri-800 text-white font-bold rounded-xl shadow">
+                Mengerti
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL ADMIN LOGIN PASSWORD -->
+    <div id="modal-admin-login" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-slate-200 space-y-4 text-xs">
+            <div class="flex justify-between items-center border-b pb-2">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-shield-halved text-mri-700 text-base"></i>
+                    <h3 class="font-black text-slate-900 text-sm">Akses Admin PDC</h3>
+                </div>
+                <button onclick="closeAdminLoginModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Masukkan Password Admin PDC:</label>
+                <input type="password" id="admin-password-input" onkeyup="if(event.key === 'Enter') submitAdminLogin()" placeholder="••••••••" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold font-mono text-center text-sm focus:ring-2 focus:ring-mri-500">
+                <p id="admin-password-error" class="text-mri-600 text-[10px] font-bold mt-1.5 hidden">Password Admin Salah!</p>
+            </div>
+            <div class="flex space-x-2 pt-2">
+                <button onclick="closeAdminLoginModal()" class="flex-1 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl">Batal</button>
+                <button onclick="submitAdminLogin()" class="flex-1 py-2 bg-mri-700 text-white font-bold rounded-xl shadow">Masuk Admin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT LOG LAPORAN -->
+    <div id="modal-edit-report-log" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-5 shadow-2xl border border-slate-200 space-y-4 text-xs">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-black text-slate-900 text-sm"><i class="fa-solid fa-pen-to-square text-mri-700 mr-1.5"></i> Edit Log Laporan Harian</h3>
+                <button onclick="closeEditReportLogModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="font-bold text-slate-700 block mb-1">Tanggal Laporan:</label>
+                        <input type="date" id="edit-log-date" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold font-mono">
+                    </div>
+                    <div>
+                        <label class="font-bold text-slate-700 block mb-1">Shift Mode:</label>
+                        <select id="edit-log-shift" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold">
+                            <option value="awal">Shift Awal</option>
+                            <option value="akhir">Shift Akhir</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="font-bold text-slate-700 block mb-1">Isian Rencana / Ringkasan Penugasan Kerja:</label>
+                    <textarea id="edit-log-penugasan" rows="3" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-800"></textarea>
+                </div>
+                <div>
+                    <label class="font-bold text-slate-700 block mb-1">Catatan Feedback / Evaluasi:</label>
+                    <textarea id="edit-log-feedback" rows="2" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-800"></textarea>
+                </div>
+            </div>
+            <div class="flex space-x-2 pt-2">
+                <button onclick="closeEditReportLogModal()" class="flex-1 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl">Batal</button>
+                <button onclick="saveEditReportLog()" class="flex-1 py-2 bg-mri-700 text-white font-bold rounded-xl shadow">Simpan Log Perubahan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRM DELETE REPORT LOG -->
+    <div id="modal-delete-report-log" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-mri-200 space-y-4 text-xs text-center">
+            <div class="w-12 h-12 bg-mri-100 text-mri-600 rounded-full flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <h3 class="font-black text-slate-900 text-base">Konfirmasi Hapus Log</h3>
+            <p class="text-slate-600">Apakah Anda yakin ingin menghapus data log laporan ini secara permanen dari database Firebase?</p>
+            <div class="flex space-x-2 pt-2">
+                <button onclick="closeDeleteReportLogModal()" class="flex-1 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl">Batal</button>
+                <button onclick="executeDeleteReportLog()" class="flex-1 py-2 bg-mri-700 text-white font-bold rounded-xl shadow">Ya, Hapus Log</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRM RESET TODAY REPORTS -->
+    <div id="modal-reset-today" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-amber-200 space-y-4 text-xs text-center">
+            <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-rotate-left"></i>
+            </div>
+            <h3 class="font-black text-slate-900 text-base">Reset Laporan Hari Ini</h3>
+            <p class="text-slate-600">Apakah Anda yakin ingin menghapus seluruh log laporan pengiriman hari ini? Status seluruh karyawan akan kembali menjadi 0% dan Belum Kirim.</p>
+            <div class="flex space-x-2 pt-2">
+                <button onclick="closeResetTodayModal()" class="flex-1 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl">Batal</button>
+                <button onclick="executeResetTodayReports()" class="flex-1 py-2 bg-amber-600 text-white font-bold rounded-xl shadow">Ya, Reset Hari Ini</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT GROOMING OPTION -->
+    <div id="modal-edit-grooming" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-slate-200 space-y-4 text-xs">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-black text-slate-900 text-sm">Edit Opsi Kesiapan Grooming</h3>
+                <button onclick="closeEditGroomingModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Teks Opsi Grooming:</label>
+                <input type="text" id="edit-grooming-text" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold">
+            </div>
+            <div class="flex space-x-2 pt-2">
+                <button onclick="closeEditGroomingModal()" class="flex-1 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl">Batal</button>
+                <button onclick="saveEditGrooming()" class="flex-1 py-2 bg-mri-700 text-white font-bold rounded-xl shadow">Simpan Opsi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT CUSTOM QUESTION -->
+    <div id="modal-edit-question" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border border-slate-200 space-y-4 text-xs">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-black text-slate-900 text-sm">Edit Pertanyaan Custom</h3>
+                <button onclick="closeEditQuestionModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="font-bold text-slate-700 block mb-1">Teks Pertanyaan:</label>
+                    <input type="text" id="edit-question-text" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold">
+                </div>
+                <div>
+                    <label class="font-bold text-slate-700 block mb-1">Kategori Shift:</label>
+                    <select id="edit-question-shift" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold">
+                        <option value="awal">Shift Awal</option>
+                        <option value="akhir">Shift Akhir</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="font-bold text-slate-700 block mb-1">Opsi Dropdown (pisahkan koma) / kosongkan utk isian teks:</label>
+                    <input type="text" id="edit-question-options" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold">
+                </div>
+            </div>
+            <div class="flex space-x-2 pt-2">
+                <button onclick="closeEditQuestionModal()" class="flex-1 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl">Batal</button>
+                <button onclick="saveEditQuestion()" class="flex-1 py-2 bg-amber-600 text-white font-bold rounded-xl shadow">Simpan Pertanyaan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT OUTLET -->
+    <div id="modal-edit-outlet" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-slate-200 space-y-4 text-xs">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-black text-slate-900 text-sm">Edit Nama Outlet</h3>
+                <button onclick="closeEditOutletModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Nama Outlet PT. MRI:</label>
+                <input type="text" id="edit-outlet-text" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold">
+            </div>
+            <div class="flex space-x-2 pt-2">
+                <button onclick="closeEditOutletModal()" class="flex-1 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl">Batal</button>
+                <button onclick="saveEditOutlet()" class="flex-1 py-2 bg-mri-700 text-white font-bold rounded-xl shadow">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT CAPTAIN -->
+    <div id="modal-edit-captain" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-slate-200 space-y-4 text-xs">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-black text-slate-900 text-sm">Edit Nama Captain</h3>
+                <button onclick="closeEditCaptainModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div>
+                <label class="font-bold text-slate-700 block mb-1">Nama Captain:</label>
+                <input type="text" id="edit-captain-text" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold">
+            </div>
+            <div class="flex space-x-2 pt-2">
+                <button onclick="closeEditCaptainModal()" class="flex-1 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl">Batal</button>
+                <button onclick="saveEditCaptain()" class="flex-1 py-2 bg-mri-700 text-white font-bold rounded-xl shadow">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT WA NUMBER -->
+    <div id="modal-edit-wa" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-slate-200 space-y-4 text-xs">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-black text-slate-900 text-sm">Edit Nomor WA Tujuan</h3>
+                <button onclick="closeEditWAModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-2">
+                <div>
+                    <label class="font-bold text-slate-700 block mb-1">Label Tujuan:</label>
+                    <input type="text" id="edit-wa-label" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold">
+                </div>
+                <div>
+                    <label class="font-bold text-slate-700 block mb-1">Nomor WhatsApp (Awali 62):</label>
+                    <input type="text" id="edit-wa-phone" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold">
+                </div>
+            </div>
+            <div class="flex space-x-2 pt-2">
+                <button onclick="closeEditWAModal()" class="flex-1 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl">Batal</button>
+                <button onclick="saveEditWA()" class="flex-1 py-2 bg-emerald-600 text-white font-bold rounded-xl shadow">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT TRAINEE -->
+    <div id="modal-edit-trainee" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border border-slate-200 space-y-4 text-xs">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-black text-slate-900 text-sm">Edit Data Karyawan OJT</h3>
+                <button onclick="closeEditTraineeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="font-bold text-slate-700 block mb-1">Nama Lengkap Karyawan:</label>
+                    <input type="text" id="edit-trainee-name" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold">
+                </div>
+                <div>
+                    <label class="font-bold text-slate-700 block mb-1">Cabang Outlet:</label>
+                    <select id="edit-trainee-outlet" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold">
+                        <!-- Injected -->
+                    </select>
+                </div>
+                <div>
+                    <label class="font-bold text-slate-700 block mb-1">Captain Penanggung Jawab:</label>
+                    <select id="edit-trainee-captain" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold">
+                        <!-- Injected -->
+                    </select>
+                </div>
+                <div>
+                    <label class="font-bold text-slate-700 block mb-1">Tanggal Mulai Bergabung:</label>
+                    <input type="date" id="edit-trainee-startdate" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold">
+                </div>
+            </div>
+            <div class="flex space-x-2 pt-2">
+                <button onclick="closeEditTraineeModal()" class="flex-1 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl">Batal</button>
+                <button onclick="saveEditTrainee()" class="flex-1 py-2 bg-mri-700 text-white font-bold rounded-xl shadow">Simpan Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRM DELETE TRAINEE -->
+    <div id="modal-delete-trainee" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-mri-200 space-y-4 text-xs text-center">
+            <div class="w-12 h-12 bg-mri-100 text-mri-600 rounded-full flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-user-xmark"></i>
+            </div>
+            <h3 class="font-black text-slate-900 text-base">Konfirmasi Hapus Data</h3>
+            <p id="delete-trainee-text-info" class="text-slate-600">Apakah Anda yakin ingin menghapus data ini dari database?</p>
+            <div class="flex space-x-2 pt-2">
+                <button onclick="closeDeleteTraineeModal()" class="flex-1 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl">Batal</button>
+                <button onclick="executeDeleteTrainee()" class="flex-1 py-2 bg-mri-700 text-white font-bold rounded-xl shadow">Ya, Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRM RESET DATABASE -->
+    <div id="modal-reset-db" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-red-200 space-y-4 text-xs text-center">
+            <div class="w-12 h-12 bg-red-100 text-mri-600 rounded-full flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="font-black text-slate-900 text-base">Konfirmasi Hapus Seluruh Database</h3>
+            <p class="text-slate-600">Apakah Anda yakin ingin menghapus seluruh data di Firebase? Action ini tidak dapat dibatalkan.</p>
+            <div class="flex space-x-2 pt-2">
+                <button onclick="closeResetModal()" class="flex-1 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl">Batal</button>
+                <button onclick="executeDatabaseReset()" class="flex-1 py-2 bg-mri-700 text-white font-bold rounded-xl shadow">Ya, Hapus Semua</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, deleteDoc, onSnapshot, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "AIzaSyBTfnFfPLtDg17HLgL12b5jXJUfhawzx3M",
+            authDomain: "mriojt-23275.firebaseapp.com",
+            databaseURL: "https://mriojt-23275-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "mriojt-23275",
+            storageBucket: "mriojt-23275.firebasestorage.app",
+            messagingSenderId: "792245763852",
+            appId: "1:792245763852:web:b2f795821e4a6e23111329",
+            measurementId: "G-YZMJHL1SCM"
+        };
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'mri-ojt-report';
+
+        let app = null;
+        let db = null;
+        let auth = null;
+
+        let defaultOutletsData = [
+            "MRI Cibaduyut", "MRI Gegerkalong", "MRI Dipatiukur", "MRI Antapani", 
+            "MRI Cimahi", "MRI Margahayu", "MRI Cibiru", "MRI Bojongsoang",
+            "MRI Care", "MRI KBP", "MRI Gempol", "MRI Soreang",
+            "MRI Arcamanik", "MRI Buahbatu"
+        ];
+
+        let defaultCaptainsData = [
+            "Sopian", "Bisma Eka Pratama", "M Hikmal Rismanto", "Mochammad Syahid Hidayatullah",
+            "Naufal Mahran Syafiq", "Mochamad Rivaldy", "Ali Rozali", "Azmi Baihaqqi Ash Shiddik"
+        ];
+        
+        let defaultWaNumbersData = [
+            { label: "Arisandi - People Development Center", phone: "6285794148295" }
+        ];
+
+        let defaultGroomingOptionsData = [
+            "Lengkap & Rapi Disetrika (Topi, Apron, Sepatu Hitam)",
+            "Cukup Rapi (Perlu Ditingkatkan)",
+            "Kurang Rapi (Kena Teguran Captain)"
+        ];
+
+        let customQuestionsData = [];
+
+        let ojtTasksData = [
+            { id: 1, stage: 1, text: "Memulai Shift Dengan Doa & Mematuhi Sholat 5 Waktu" },
+            { id: 2, stage: 1, text: "Seragam Rapi Disetrika, Topi/Apron Bersih, Kuku Pendek & Budaya 5R" },
+            { id: 3, stage: 1, text: "Hari 1-3: Mengamati Seluruh Alur Operasional Opening/Closing" },
+            { id: 4, stage: 1, text: "Hari 1-3: Mengenal Nama & Fungsi Seluruh Peralatan Bar Tools" },
+            { id: 5, stage: 2, text: "Hari 4-17: Menguasai Input Menu POS ESB Tanpa Salah Pesanan" },
+            { id: 6, stage: 2, text: "Hari 4-17: Cash Handling, Transaksi QRIS, EDC, & Modal Kasir" },
+            { id: 7, stage: 2, text: "Hari 4-17: Service Excellent 5S (Senyum, Sapa, Salam, Sopan, Santun)" },
+            { id: 8, stage: 2, text: "Hari 4-17: Upselling Natural Menu Signature Minuman Rempah" },
+            { id: 9, stage: 3, text: "Hari 18-48: Takaran Resep Menggunakan Timbangan Digital SOP" },
+            { id: 10, stage: 3, text: "Hari 18-48: Pencapaian Kecepatan Penyajian (Service Time < 90s)" },
+            { id: 11, stage: 3, text: "Hari 18-48: Hygiene & Food Safety Bar Serta FIFO/FEFO" },
+            { id: 12, stage: 4, text: "Hari 48-90: Mampu Rangkap Tugas Kasir & Racik Secara Mandiri" },
+            { id: 13, stage: 4, text: "Hari 48-90: Pelaksanaan Stock Opname Fisik Harian & Mingguan" },
+            { id: 14, stage: 4, text: "Hari 48-90: Prep Rempah Segar & Peramalan Order Bahan Baku" }
+        ];
+
+        const defaultTraineesList = [
+            { id: 't1', name: "Andika Agung Muhsiam", outlet: "MRI Cibaduyut", captain: "Sopian", startDate: "2026-08-01", completedTasks: [], completedSholat: [], awalText: "", awalFeedback: "", akhirText: "", akhirTerlewat: "", akhirCaptainNotes: "", customAnswers: {} },
+            { id: 't2', name: "Bintang Eka Aditya", outlet: "MRI Gegerkalong", captain: "Bisma Eka Pratama", startDate: "2026-08-01", completedTasks: [], completedSholat: [], awalText: "", awalFeedback: "", akhirText: "", akhirTerlewat: "", akhirCaptainNotes: "", customAnswers: {} },
+            { id: 't3', name: "Dayat Ramadhan", outlet: "MRI Dipatiukur", captain: "M Hikmal Rismanto", startDate: "2026-08-01", completedTasks: [], completedSholat: [], awalText: "", awalFeedback: "", akhirText: "", akhirTerlewat: "", akhirCaptainNotes: "", customAnswers: {} },
+            { id: 't4', name: "Fadly Nur Firdaus", outlet: "MRI Antapani", captain: "Mochammad Syahid Hidayatullah", startDate: "2026-08-01", completedTasks: [], completedSholat: [], awalText: "", awalFeedback: "", akhirText: "", akhirTerlewat: "", akhirCaptainNotes: "", customAnswers: {} },
+            { id: 't5', name: "Firgian Irsyad Shiddiq", outlet: "MRI Cimahi", captain: "Naufal Mahran Syafiq", startDate: "2026-08-01", completedTasks: [], completedSholat: [], awalText: "", awalFeedback: "", akhirText: "", akhirTerlewat: "", akhirCaptainNotes: "", customAnswers: {} },
+            { id: 't6', name: "Guntur Andi Syahputra", outlet: "MRI Margahayu", captain: "Mochamad Rivaldy", startDate: "2026-08-01", completedTasks: [], completedSholat: [], awalText: "", awalFeedback: "", akhirText: "", akhirTerlewat: "", akhirCaptainNotes: "", customAnswers: {} },
+            { id: 't7', name: "Muhammad Riski Hidayat", outlet: "MRI Soreang", captain: "Ali Rozali", startDate: "2026-08-01", completedTasks: [], completedSholat: [], awalText: "", awalFeedback: "", akhirText: "", akhirTerlewat: "", akhirCaptainNotes: "", customAnswers: {} },
+            { id: 't8', name: "Muhammad Zalaludin Hali", outlet: "MRI Buahbatu", captain: "Azmi Baihaqqi Ash Shiddik", startDate: "2026-08-01", completedTasks: [], completedSholat: [], awalText: "", awalFeedback: "", akhirText: "", akhirTerlewat: "", akhirCaptainNotes: "", customAnswers: {} },
+            { id: 't9', name: "Wandi Rustandi", outlet: "MRI Cibaduyut", captain: "Sopian", startDate: "2026-08-01", completedTasks: [], completedSholat: [], awalText: "", awalFeedback: "", akhirText: "", akhirTerlewat: "", akhirCaptainNotes: "", customAnswers: {} }
+        ];
+
+        let outletsData = [...defaultOutletsData];
+        let captainsData = [...defaultCaptainsData];
+        let waNumbersData = [...defaultWaNumbersData];
+        let groomingOptionsData = [...defaultGroomingOptionsData];
+
+        let traineesData = [];
+        let dailyReportsData = [];
+
+        let activeMainView = 'laporan';
+        let activeShiftMode = 'awal';
+        let isAdminUnlocked = false;
+
+        // TRACK ACTIVE TRAINEE TO PREVENT DATA CORRUPTION WHEN SWITCHING DROPDOWNS
+        let currentSelectedTraineeId = null;
+
+        let editGroomingIndex = null;
+        let editQuestionIndex = null;
+        let editOutletIndex = null;
+        let editCaptainIndex = null;
+        let editWAIndex = null;
+        let editTraineeId = null;
+        let editReportLogId = null;
+        let deleteReportLogId = null;
+
+        function showAppAlert(title, message) {
+            const modal = document.getElementById('modal-app-alert');
+            const titleEl = document.getElementById('app-alert-title');
+            const msgEl = document.getElementById('app-alert-message');
+            if (titleEl) titleEl.textContent = title;
+            if (msgEl) msgEl.textContent = message;
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeAppAlertModal() {
+            const modal = document.getElementById('modal-app-alert');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function calculateDaysAndPhase(startDateStr) {
+            if (!startDateStr) return { currentDayNum: 1, endDateStr: '--', phaseName: 'Stage 1: Observasi', stageId: 1 };
+            
+            const parts = startDateStr.split('-');
+            if (parts.length !== 3) return { currentDayNum: 1, endDateStr: '--', phaseName: 'Stage 1: Observasi', stageId: 1 };
+
+            const start = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+            const diffTime = today - start;
+            let currentDayNum = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            if (currentDayNum < 1) currentDayNum = 1;
+            if (currentDayNum > 90) currentDayNum = 90;
+
+            const endDate = new Date(start);
+            endDate.setDate(start.getDate() + 89);
+            const endDateStr = endDate.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+            let phaseName = "Stage 1: Observasi";
+            let stageId = 1;
+            if (currentDayNum >= 4 && currentDayNum <= 17) {
+                phaseName = "Stage 2: Kasir & POS";
+                stageId = 2;
+            } else if (currentDayNum >= 18 && currentDayNum <= 48) {
+                phaseName = "Stage 3: Racik Bar";
+                stageId = 3;
+            } else if (currentDayNum >= 49) {
+                phaseName = "Stage 4: Operasional & SO";
+                stageId = 4;
+            }
+
+            return { currentDayNum, endDateStr, phaseName, stageId };
+        }
+
+        function getRoadmapTargetForDay(dayNum) {
+            if (dayNum <= 3) {
+                return `[Hari ke-${dayNum} — Stage 1 Observasi Bar]: Mengamati alur kerja opening/closing outlet, menghafal nama seluruh bar tools (jigger, shaker, timbangan, blender), serta menerapkan Service Excellent 5S (Senyum, Sapa, Salam, Sopan, Santun).`;
+            } else if (dayNum <= 17) {
+                return `[Hari ke-${dayNum} — Stage 2 Station Kasir]: Menguasai transaksi POS ESB tanpa kesalahan, kelancaran cash handling, payment QRIS/EDC, rekap modal kasir, dan upselling natural menu minuman rempah.`;
+            } else if (dayNum <= 48) {
+                return `[Hari ke-${dayNum} — Stage 3 Station Racik Bar]: Memastikan ketepatan resep racikan rempah presisi dengan timbangan digital SOP, menjaga waktu penyajian <90 detik per porsi, dan disiplin Hygiene/FIFO bahan baku.`;
+            } else if (dayNum < 90) {
+                return `[Hari ke-${dayNum} — Stage 4 Operasional Mandiri]: Rangkap tugas Kasir & Racik Bar secara efisien, melakukan Stock Opname fisik harian/mingguan dengan akurat, dan peramalan order bahan baku (forecasting).`;
+            } else {
+                return `[Hari ke-90 — Final Stage OJT]: Hari Terakhir OJT! Evaluasi Final & Persiapan Kelulusan Penilaian 90 Hari oleh Captain & People Development Center.`;
+            }
+        }
+
+        function getTodayString() {
+            const d = new Date();
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        function updateRealtimeClock() {
+            const now = new Date();
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const dayEl = document.getElementById('realtime-day');
+            const dateEl = document.getElementById('realtime-date');
+            const clockEl = document.getElementById('realtime-clock');
+
+            if (dayEl) dayEl.textContent = days[now.getDay()];
+            if (dateEl) dateEl.textContent = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            if (clockEl) clockEl.textContent = now.toLocaleTimeString('id-ID') + ' WIB';
+        }
+
+        function saveCurrentFormToTrainee(traineeIdToSave = null) {
+            const targetId = traineeIdToSave || currentSelectedTraineeId;
+            if (!targetId) return;
+            const trainee = traineesData.find(t => t.id === targetId);
+            if (!trainee) return;
+
+            const elAwalText = document.getElementById('awal-penugasan-text');
+            if (elAwalText) trainee.awalText = elAwalText.value;
+
+            const elAwalFb = document.getElementById('awal-feedback-text');
+            if (elAwalFb) trainee.awalFeedback = elAwalFb.value;
+
+            const elAkhirText = document.getElementById('akhir-penugasan-text');
+            if (elAkhirText) trainee.akhirText = elAkhirText.value;
+
+            const elAkhirNotes = document.getElementById('akhir-terlewat-notes');
+            if (elAkhirNotes) trainee.akhirTerlewat = elAkhirNotes.value;
+
+            const elAkhirCapt = document.getElementById('akhir-captain-notes');
+            if (elAkhirCapt) trainee.akhirCaptainNotes = elAkhirCapt.value;
+
+            if (!trainee.customAnswers) trainee.customAnswers = {};
+            const qAwal = customQuestionsData.filter(q => q.shift === 'awal');
+            qAwal.forEach((q, idx) => {
+                const el = document.getElementById(`cq-input-awal-${idx}`);
+                if (el) trainee.customAnswers[q.id] = el.value;
+            });
+            const qAkhir = customQuestionsData.filter(q => q.shift === 'akhir');
+            qAkhir.forEach((q, idx) => {
+                const el = document.getElementById(`cq-input-akhir-${idx}`);
+                if (el) trainee.customAnswers[q.id] = el.value;
+            });
+        }
+
+        function populateSelectors(fromUserAction = false) {
+            const traineeSelect = document.getElementById('select-trainee');
+            const currentVal = traineeSelect ? traineeSelect.value : "";
+
+            if (traineeSelect) {
+                traineeSelect.innerHTML = `<option value="" disabled ${!currentVal ? 'selected' : ''}>-- Pilih Nama Karyawan OJT --</option>` + 
+                traineesData.map(t => 
+                    `<option value="${t.id}" ${t.id === currentVal ? 'selected' : ''}>${t.name} (${t.outlet})</option>`
+                ).join('');
+                if (currentVal && traineesData.some(t => t.id === currentVal)) {
+                    traineeSelect.value = currentVal;
+                } else {
+                    traineeSelect.value = "";
+                }
+            }
+
+            const logTraineeFilter = document.getElementById('filter-log-trainee');
+            if (logTraineeFilter) {
+                const cur = logTraineeFilter.value;
+                logTraineeFilter.innerHTML = `<option value="ALL">Semua Karyawan</option>` + traineesData.map(t => 
+                    `<option value="${t.id}">${t.name} (${t.outlet})</option>`
+                ).join('');
+                if (cur && (cur === 'ALL' || traineesData.some(t => t.id === cur))) logTraineeFilter.value = cur;
+            }
+
+            const waSelect = document.getElementById('wa-target-select');
+            if (waSelect) {
+                const curWa = waSelect.value;
+                waSelect.innerHTML = waNumbersData.map(wa => 
+                    `<option value="${wa.phone}">${wa.label} (${wa.phone})</option>`
+                ).join('');
+                if (curWa && waNumbersData.some(w => w.phone === curWa)) waSelect.value = curWa;
+            }
+
+            const groomingSelect = document.getElementById('awal-grooming');
+            if (groomingSelect) {
+                const curGroom = groomingSelect.value;
+                groomingSelect.innerHTML = groomingOptionsData.map(g => 
+                    `<option value="${g}">${g}</option>`
+                ).join('');
+                if (curGroom && groomingOptionsData.includes(curGroom)) groomingSelect.value = curGroom;
+            }
+
+            ['new-trainee-outlet', 'edit-trainee-outlet'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    const cur = el.value;
+                    el.innerHTML = outletsData.map(o => `<option value="${o}">${o}</option>`).join('');
+                    if (cur) el.value = cur;
+                }
+            });
+
+            ['new-trainee-captain', 'edit-trainee-captain'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    const cur = el.value;
+                    el.innerHTML = captainsData.map(c => `<option value="${c}">${c}</option>`).join('');
+                    if (cur) el.value = cur;
+                }
+            });
+
+            if (typeof window.onTraineeChange === 'function') {
+                window.onTraineeChange(fromUserAction);
+            }
+        }
+
+        function onTraineeChange(preserveInputs = false) {
+            const traineeSelect = document.getElementById('select-trainee');
+            if (!traineeSelect) return;
+            const newTraineeId = traineeSelect.value;
+
+            // Save previous trainee's input values BEFORE switching context to prevent data corruption!
+            if (currentSelectedTraineeId && currentSelectedTraineeId !== newTraineeId) {
+                saveCurrentFormToTrainee(currentSelectedTraineeId);
+                preserveInputs = false; // Must load the newly selected trainee's input values
+            }
+
+            currentSelectedTraineeId = newTraineeId;
+
+            if (!newTraineeId) {
+                if (!preserveInputs) {
+                    if (document.getElementById('awal-penugasan-text')) document.getElementById('awal-penugasan-text').value = '';
+                    if (document.getElementById('awal-feedback-text')) document.getElementById('awal-feedback-text').value = '';
+                    if (document.getElementById('akhir-penugasan-text')) document.getElementById('akhir-penugasan-text').value = '';
+                    if (document.getElementById('akhir-terlewat-notes')) document.getElementById('akhir-terlewat-notes').value = '';
+                    if (document.getElementById('akhir-captain-notes')) document.getElementById('akhir-captain-notes').value = '';
+                }
+
+                document.getElementById('days-count-ojt').textContent = `Silakan Pilih Karyawan`;
+                document.getElementById('current-phase-label').textContent = `Fase: --`;
+                document.getElementById('date-start-ojt').textContent = `--/--/----`;
+                document.getElementById('date-end-ojt').textContent = `--/--/----`;
+
+                renderShiftChecklist(null);
+                updateSholatCheckboxes(null);
+                updateTargetBesok(null);
+                renderCustomQuestionsContainers();
+                generateWAPreview();
+                return;
+            }
+
+            const trainee = traineesData.find(t => t.id === newTraineeId);
+            if (!trainee) return;
+
+            if (!preserveInputs) {
+                const elAwalText = document.getElementById('awal-penugasan-text');
+                if (elAwalText && document.activeElement !== elAwalText) elAwalText.value = trainee.awalText || '';
+
+                const elAwalFb = document.getElementById('awal-feedback-text');
+                if (elAwalFb && document.activeElement !== elAwalFb) elAwalFb.value = trainee.awalFeedback || '';
+
+                const elAkhirText = document.getElementById('akhir-penugasan-text');
+                if (elAkhirText && document.activeElement !== elAkhirText) elAkhirText.value = trainee.akhirText || '';
+
+                const elAkhirNotes = document.getElementById('akhir-terlewat-notes');
+                if (elAkhirNotes && document.activeElement !== elAkhirNotes) elAkhirNotes.value = trainee.akhirTerlewat || '';
+
+                const elAkhirCapt = document.getElementById('akhir-captain-notes');
+                if (elAkhirCapt && document.activeElement !== elAkhirCapt) elAkhirCapt.value = trainee.akhirCaptainNotes || '';
+            }
+
+            const dayInfo = calculateDaysAndPhase(trainee.startDate);
+            const daysCountEl = document.getElementById('days-count-ojt');
+            const phaseLabelEl = document.getElementById('current-phase-label');
+            const dateStartEl = document.getElementById('date-start-ojt');
+            const dateEndEl = document.getElementById('date-end-ojt');
+
+            if (daysCountEl) daysCountEl.textContent = `Hari ke-${dayInfo.currentDayNum} / 90 Hari`;
+            if (phaseLabelEl) phaseLabelEl.textContent = `Fase: ${dayInfo.phaseName}`;
+            if (dateStartEl) dateStartEl.textContent = trainee.startDate;
+            if (dateEndEl) dateEndEl.textContent = dayInfo.endDateStr;
+
+            renderShiftChecklist(trainee);
+            updateSholatCheckboxes(trainee);
+            updateTargetBesok(dayInfo.currentDayNum);
+
+            const activeEl = document.activeElement;
+            const isEditingCustomQ = activeEl && (activeEl.id.startsWith('cq-input-awal-') || activeEl.id.startsWith('cq-input-akhir-'));
+            if (!isEditingCustomQ) {
+                renderCustomQuestionsContainers();
+            }
+
+            generateWAPreview();
+        }
+
+        function renderCustomQuestionsContainers() {
+            const containerAwal = document.getElementById('custom-questions-awal-container');
+            const containerAkhir = document.getElementById('custom-questions-akhir-container');
+
+            const traineeSelect = document.getElementById('select-trainee');
+            const trainee = (traineeSelect && traineeSelect.value) ? traineesData.find(t => t.id === traineeSelect.value) : null;
+            const savedAnswers = (trainee && trainee.customAnswers) ? trainee.customAnswers : {};
+
+            if (containerAwal) {
+                const questionsAwal = customQuestionsData.filter(q => q.shift === 'awal');
+                containerAwal.innerHTML = questionsAwal.map((q, idx) => {
+                    const savedVal = savedAnswers[q.id] || '';
+                    return `
+                    <div class="space-y-1 p-2.5 bg-amber-50/50 rounded-xl border border-amber-200/60">
+                        <label class="font-bold text-slate-800 block"><i class="fa-solid fa-circle-question text-amber-600 mr-1.5"></i> ${q.question}:</label>
+                        ${q.options && q.options.length > 0 ? `
+                            <select id="cq-input-awal-${idx}" data-qid="${q.id}" onchange="generateWAPreview()" class="w-full p-2 bg-white border border-slate-300 rounded-lg font-medium text-slate-800">
+                                ${q.options.map(opt => `<option value="${opt}" ${opt === savedVal ? 'selected' : ''}>${opt}</option>`).join('')}
+                            </select>
+                        ` : `
+                            <input type="text" id="cq-input-awal-${idx}" data-qid="${q.id}" value="${savedVal}" oninput="generateWAPreview()" placeholder="Jawaban Anda..." class="w-full p-2 bg-white border border-slate-300 rounded-lg font-medium">
+                        `}
+                    </div>
+                `;}).join('');
+            }
+
+            if (containerAkhir) {
+                const questionsAkhir = customQuestionsData.filter(q => q.shift === 'akhir');
+                containerAkhir.innerHTML = questionsAkhir.map((q, idx) => {
+                    const savedVal = savedAnswers[q.id] || '';
+                    return `
+                    <div class="space-y-1 p-2.5 bg-indigo-50/50 rounded-xl border border-indigo-200/60">
+                        <label class="font-bold text-slate-800 block"><i class="fa-solid fa-circle-question text-indigo-600 mr-1.5"></i> ${q.question}:</label>
+                        ${q.options && q.options.length > 0 ? `
+                            <select id="cq-input-akhir-${idx}" data-qid="${q.id}" onchange="generateWAPreview()" class="w-full p-2 bg-white border border-slate-300 rounded-lg font-medium text-slate-800">
+                                ${q.options.map(opt => `<option value="${opt}" ${opt === savedVal ? 'selected' : ''}>${opt}</option>`).join('')}
+                            </select>
+                        ` : `
+                            <input type="text" id="cq-input-akhir-${idx}" data-qid="${q.id}" value="${savedVal}" oninput="generateWAPreview()" placeholder="Jawaban Anda..." class="w-full p-2 bg-white border border-slate-300 rounded-lg font-medium">
+                        `}
+                    </div>
+                `;}).join('');
+            }
+        }
+
+        function renderShiftChecklist(trainee) {
+            const container = document.getElementById('tasks-container');
+            const badgeEl = document.getElementById('current-stage-badge');
+            if (!container) return;
+
+            if (!trainee) {
+                container.innerHTML = `<p class="p-4 text-center text-slate-400 font-medium text-xs">Pilih nama karyawan terlebih dahulu.</p>`;
+                if (badgeEl) badgeEl.textContent = `Pilih Karyawan Dahulu`;
+                return;
+            }
+
+            const dayInfo = calculateDaysAndPhase(trainee.startDate);
+            if (badgeEl) {
+                badgeEl.textContent = `${dayInfo.phaseName} (Hari ke-${dayInfo.currentDayNum})`;
+            }
+
+            const activeTasks = ojtTasksData.filter(task => task.stage === dayInfo.stageId || task.id <= 2);
+            const completedSet = new Set(trainee.completedTasks || []);
+
+            container.innerHTML = activeTasks.map(task => {
+                const isChecked = completedSet.has(task.id);
+                return `
+                    <div class="p-3.5 flex items-start space-x-3 transition-colors ${isChecked ? 'bg-emerald-50/60' : 'hover:bg-slate-100'}">
+                        <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleTask('${trainee.id}', ${task.id})" class="mt-0.5 w-4 h-4 rounded text-mri-700 focus:ring-mri-500 bg-white border-slate-300 cursor-pointer">
+                        <div class="flex-1 text-xs">
+                            <p class="font-bold ${isChecked ? 'line-through text-slate-400' : 'text-slate-800'}">${task.text}</p>
+                            <span class="text-[10px] text-slate-500">Target Stage ${task.stage}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateTargetBesok(dayNum) {
+            const badgeEl = document.getElementById('next-day-badge');
+            const textEl = document.getElementById('akhir-target-besok-text');
+
+            if (!dayNum) {
+                if (badgeEl) badgeEl.textContent = `Hari ke--`;
+                if (textEl) textEl.textContent = `Pilih Karyawan terlebih dahulu untuk melihat target kurikulum OJT...`;
+                return;
+            }
+
+            const nextDayNum = Math.min(dayNum + 1, 90);
+            const targetText = getRoadmapTargetForDay(nextDayNum);
+
+            if (badgeEl) badgeEl.textContent = `Hari ke-${nextDayNum} / 90 Hari`;
+            if (textEl) textEl.textContent = targetText;
+        }
+
+        function updateSholatCheckboxes(trainee) {
+            const sholatSet = new Set(trainee ? (trainee.completedSholat || []) : []);
+            ['subuh', 'dzuhur', 'ashar', 'maghrib', 'isya'].forEach(s => {
+                const isChecked = sholatSet.has(s);
+                const el1 = document.getElementById(`sholat-${s}`);
+                const el2 = document.getElementById(`sholat-${s}-akhir`);
+                if (el1) el1.checked = isChecked;
+                if (el2) el2.checked = isChecked;
+            });
+        }
+
+        function toggleSholat(sholatKey) {
+            const traineeSelect = document.getElementById('select-trainee');
+            if (!traineeSelect || !traineeSelect.value) {
+                showAppAlert("Pemberitahuan", "Silakan pilih nama karyawan OJT terlebih dahulu sebelum mengisi rekap sholat!");
+                updateSholatCheckboxes(null);
+                return;
+            }
+            const trainee = traineesData.find(t => t.id === traineeSelect.value);
+            if (!trainee) return;
+
+            if (!trainee.completedSholat) trainee.completedSholat = [];
+            const idx = trainee.completedSholat.indexOf(sholatKey);
+            if (idx > -1) {
+                trainee.completedSholat.splice(idx, 1);
+            } else {
+                trainee.completedSholat.push(sholatKey);
+            }
+
+            updateSholatCheckboxes(trainee);
+            generateWAPreview();
+
+            if (db) {
+                const traineeRef = doc(db, 'artifacts', appId, 'public', 'data', 'trainees', trainee.id);
+                setDoc(traineeRef, { completedSholat: trainee.completedSholat }, { merge: true }).catch(console.error);
+            }
+        }
+
+        function toggleTask(traineeId, taskId) {
+            const trainee = traineesData.find(t => t.id === traineeId);
+            if (!trainee) return;
+
+            if (!trainee.completedTasks) trainee.completedTasks = [];
+            const idx = trainee.completedTasks.indexOf(taskId);
+            if (idx > -1) {
+                trainee.completedTasks.splice(idx, 1);
+            } else {
+                trainee.completedTasks.push(taskId);
+            }
+
+            renderShiftChecklist(trainee);
+            generateWAPreview();
+
+            if (db) {
+                const traineeRef = doc(db, 'artifacts', appId, 'public', 'data', 'trainees', trainee.id);
+                setDoc(traineeRef, { completedTasks: trainee.completedTasks }, { merge: true }).catch(console.error);
+            }
+        }
+
+        function switchShiftMode(mode) {
+            activeShiftMode = mode;
+            const btnAwal = document.getElementById('tab-btn-awal');
+            const btnAkhir = document.getElementById('tab-btn-akhir');
+            const sectionAwal = document.getElementById('form-awal-section');
+            const sectionAkhir = document.getElementById('form-akhir-section');
+
+            if (mode === 'awal') {
+                btnAwal.className = "flex-1 py-2.5 sm:py-3 rounded-xl transition flex items-center justify-center space-x-1.5 sm:space-x-2 bg-mri-700 text-white shadow";
+                btnAkhir.className = "flex-1 py-2.5 sm:py-3 rounded-xl transition flex items-center justify-center space-x-1.5 sm:space-x-2 text-slate-700 hover:text-slate-900";
+                sectionAwal.classList.remove('hidden');
+                sectionAkhir.classList.add('hidden');
+            } else {
+                btnAkhir.className = "flex-1 py-2.5 sm:py-3 rounded-xl transition flex items-center justify-center space-x-1.5 sm:space-x-2 bg-mri-700 text-white shadow";
+                btnAwal.className = "flex-1 py-2.5 sm:py-3 rounded-xl transition flex items-center justify-center space-x-1.5 sm:space-x-2 text-slate-700 hover:text-slate-900";
+                sectionAkhir.classList.remove('hidden');
+                sectionAwal.classList.add('hidden');
+            }
+
+            const traineeSelect = document.getElementById('select-trainee');
+            const trainee = (traineeSelect && traineeSelect.value) ? traineesData.find(t => t.id === traineeSelect.value) : null;
+            updateSholatCheckboxes(trainee);
+            generateWAPreview();
+        }
+
+        function switchMainView(viewName) {
+            activeMainView = viewName;
+            ['laporan', 'panduan', 'dashboard'].forEach(v => {
+                const el = document.getElementById(`view-${v}`);
+                const btn = document.getElementById(`nav-btn-${v}`);
+                if (el) el.classList.add('hidden');
+                if (btn) btn.className = "px-2.5 sm:px-3 py-1.5 rounded-lg transition flex items-center space-x-1.5 text-mri-100 hover:text-white hover:bg-white/10 whitespace-nowrap";
+            });
+
+            const activeEl = document.getElementById(`view-${viewName}`);
+            const activeBtn = document.getElementById(`nav-btn-${viewName}`);
+            if (activeEl) activeEl.classList.remove('hidden');
+            if (activeBtn) activeBtn.className = "px-2.5 sm:px-3 py-1.5 rounded-lg transition flex items-center space-x-1.5 bg-mri-600 text-white shadow whitespace-nowrap";
+
+            if (viewName === 'dashboard' && isAdminUnlocked) {
+                renderAnalyticsDashboard();
+                renderAdminMasterLists();
+                renderDailyReportsLog();
+                refreshFirebaseStats();
+            }
+        }
+
+        function generateWAPreview() {
+            saveCurrentFormToTrainee();
+
+            const traineeSelect = document.getElementById('select-trainee');
+            const box = document.getElementById('wa-preview-box');
+
+            if (!traineeSelect || !traineeSelect.value) {
+                if (box) box.textContent = "Silakan pilih nama karyawan OJT terlebih dahulu...";
+                return;
+            }
+
+            const trainee = traineesData.find(t => t.id === traineeSelect.value);
+            if (!trainee) {
+                if (box) box.textContent = "Silakan pilih nama karyawan OJT terlebih dahulu...";
+                return;
+            }
+
+            const dayInfo = calculateDaysAndPhase(trainee.startDate);
+            const todayStr = getTodayString();
+
+            let msg = `*LAPORAN HARIAN OJT — PT. MINUM REMPAH INDONESIA*\n`;
+            msg += `═════════════════════════\n`;
+            msg += `👤 *Nama Crew*: ${trainee.name}\n`;
+            msg += `🏪 *Outlet*: ${trainee.outlet}\n`;
+            msg += `🥷 *Captain*: ${trainee.captain}\n`;
+            msg += `📅 *Tanggal*: ${todayStr}\n`;
+            msg += `⏳ *Status*: Hari ke-${dayInfo.currentDayNum} / 90 Hari (${dayInfo.phaseName})\n`;
+            msg += `═════════════════════════\n\n`;
+
+            if (activeShiftMode === 'awal') {
+                const timeAwal = document.getElementById('awal-time')?.value || '--:--';
+                const grooming = document.getElementById('awal-grooming')?.value || '-';
+                const penugasan = document.getElementById('awal-penugasan-text')?.value || '-';
+                const feedback = document.getElementById('awal-feedback-text')?.value || '-';
+
+                msg += `☀️ *[1. LAPORAN AWAL SHIFT]*\n`;
+                msg += `⏰ *Jam Datang*: ${timeAwal} WIB\n`;
+                msg += `👔 *Kesiapan Grooming*: ${grooming}\n\n`;
+                msg += `📝 *Isian Rencana Kerja / Penugasan*:\n${penugasan}\n\n`;
+                msg += `💬 *Feedback Ke PDC / Catatan Awal*:\n${feedback}\n\n`;
+
+                const qAwal = customQuestionsData.filter(q => q.shift === 'awal');
+                if (qAwal.length > 0) {
+                    msg += `❓ *Pertanyaan Tambahan Shift Awal*:\n`;
+                    qAwal.forEach((q, idx) => {
+                        const val = document.getElementById(`cq-input-awal-${idx}`)?.value || '-';
+                        msg += `• ${q.question}: ${val}\n`;
+                    });
+                    msg += `\n`;
+                }
+            } else {
+                const timeAkhir = document.getElementById('akhir-time')?.value || '--:--';
+                const kebersihan = document.getElementById('akhir-kebersihan')?.value || '-';
+                const penugasan = document.getElementById('akhir-penugasan-text')?.value || '-';
+                const terlewat = document.getElementById('akhir-terlewat-notes')?.value || '-';
+                const targetBesok = document.getElementById('akhir-target-besok-text')?.textContent.trim() || '-';
+                const feedback = document.getElementById('akhir-captain-notes')?.value || '-';
+
+                msg += `🌙 *[2. LAPORAN AKHIR SHIFT]*\n`;
+                msg += `⏰ *Jam Closing*: ${timeAkhir} WIB\n`;
+                msg += `✨ *Kondisi Kebersihan*: ${kebersihan}\n\n`;
+                msg += `📊 *Isian Hasil Kerja Shift*:\n${penugasan}\n\n`;
+                msg += `🎯 *Target Hari Besok (Next Focus)*:\n${targetBesok}\n\n`;
+                msg += `⚠️ *Hal Terlewat / Kendala*:\n${terlewat}\n\n`;
+                msg += `💬 *Feedback PDC / Evaluasi Captain*:\n${feedback}\n\n`;
+
+                const qAkhir = customQuestionsData.filter(q => q.shift === 'akhir');
+                if (qAkhir.length > 0) {
+                    msg += `❓ *Pertanyaan Tambahan Shift Akhir*:\n`;
+                    qAkhir.forEach((q, idx) => {
+                        const val = document.getElementById(`cq-input-akhir-${idx}`)?.value || '-';
+                        msg += `• ${q.question}: ${val}\n`;
+                    });
+                    msg += `\n`;
+                }
+            }
+
+            const sholatList = (trainee.completedSholat || []).map(s => s.toUpperCase()).join(', ') || 'Belum diisi';
+            msg += `🕌 *Sholat 5 Waktu Terlaksana*: ${sholatList}\n`;
+
+            const activeTasks = ojtTasksData.filter(t => t.stage === dayInfo.stageId || t.id <= 2);
+            const doneTasksCount = (trainee.completedTasks || []).filter(tid => activeTasks.some(at => at.id === tid)).length;
+            msg += `✅ *Ceklis Target Hari Ini*: ${doneTasksCount} dari ${activeTasks.length} Tugas Selesai\n\n`;
+
+            msg += `*PT. Minum Rempah Indonesia — People Development Center*`;
+
+            if (box) box.textContent = msg;
+        }
+
+        function dispatchWhatsAppReport() {
+            saveCurrentFormToTrainee();
+
+            const waTargetSelect = document.getElementById('wa-target-select');
+            const traineeSelect = document.getElementById('select-trainee');
+            const box = document.getElementById('wa-preview-box');
+
+            if (!traineeSelect || !traineeSelect.value) {
+                showAppAlert("Peringatan Sistem", "Silakan pilih nama karyawan OJT terlebih dahulu sebelum mengirim laporan!");
+                return;
+            }
+
+            if (!waTargetSelect || !box) return;
+
+            const targetPhone = waTargetSelect.value;
+            const text = box.textContent;
+            const trainee = traineesData.find(t => t.id === traineeSelect.value);
+
+            if (trainee) {
+                const todayStr = getTodayString();
+                const nowTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                
+                let penugasanText = "";
+                let feedbackText = "";
+
+                if (activeShiftMode === 'awal') {
+                    penugasanText = document.getElementById('awal-penugasan-text')?.value || '';
+                    feedbackText = document.getElementById('awal-feedback-text')?.value || '';
+                    trainee.awalText = penugasanText;
+                    trainee.awalFeedback = feedbackText;
+                } else {
+                    penugasanText = document.getElementById('akhir-penugasan-text')?.value || '';
+                    feedbackText = document.getElementById('akhir-captain-notes')?.value || '';
+                    trainee.akhirText = penugasanText;
+                    trainee.akhirTerlewat = document.getElementById('akhir-terlewat-notes')?.value || '';
+                    trainee.akhirCaptainNotes = feedbackText;
+                }
+
+                if (db) {
+                    const docId = `rep_${trainee.id}_${todayStr}_${activeShiftMode}`;
+                    const reportRef = doc(db, 'artifacts', appId, 'public', 'data', 'dailyReports', docId);
+                    
+                    const logObj = {
+                        id: docId,
+                        traineeId: trainee.id,
+                        traineeName: trainee.name,
+                        outlet: trainee.outlet,
+                        captain: trainee.captain,
+                        date: todayStr,
+                        time: nowTime,
+                        shiftMode: activeShiftMode,
+                        penugasanText: penugasanText,
+                        feedbackText: feedbackText,
+                        sholatCount: (trainee.completedSholat || []).length,
+                        fullText: text,
+                        timestamp: new Date().toISOString()
+                    };
+
+                    setDoc(reportRef, logObj, { merge: true }).catch(console.error);
+
+                    const traineeRef = doc(db, 'artifacts', appId, 'public', 'data', 'trainees', trainee.id);
+                    setDoc(traineeRef, {
+                        awalText: trainee.awalText || '',
+                        awalFeedback: trainee.awalFeedback || '',
+                        akhirText: trainee.akhirText || '',
+                        akhirTerlewat: trainee.akhirTerlewat || '',
+                        akhirCaptainNotes: trainee.akhirCaptainNotes || '',
+                        customAnswers: trainee.customAnswers || {}
+                    }, { merge: true }).catch(console.error);
+                }
+            }
+
+            renderLiveSubmissionGrid();
+            const url = `https://wa.me/${targetPhone}?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+        }
+
+        function renderLiveSubmissionGrid() {
+            const grid = document.getElementById('live-submission-grid');
+            if (!grid) return;
+            const todayStr = getTodayString();
+
+            grid.innerHTML = traineesData.map(t => {
+                const sentAwal = dailyReportsData.some(r => r.traineeId === t.id && r.date === todayStr && r.shiftMode === 'awal');
+                const sentAkhir = dailyReportsData.some(r => r.traineeId === t.id && r.date === todayStr && r.shiftMode === 'akhir');
+
+                let statusBg = "bg-rose-50 border-rose-200 text-rose-800";
+                let statusBadge = `<span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded font-black">Belum Kirim</span>`;
+
+                if (sentAwal && sentAkhir) {
+                    statusBg = "bg-emerald-50 border-emerald-200 text-emerald-800";
+                    statusBadge = `<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-black">Lengkap 2 Shift</span>`;
+                } else if (sentAwal) {
+                    statusBg = "bg-amber-50 border-amber-200 text-amber-800";
+                    statusBadge = `<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-black">Laporan Awal Ready</span>`;
+                } else if (sentAkhir) {
+                    statusBg = "bg-indigo-50 border-indigo-200 text-indigo-800";
+                    statusBadge = `<span class="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded font-black">Laporan Akhir Ready</span>`;
+                }
+
+                return `
+                    <div class="p-2.5 rounded-xl border ${statusBg} flex items-center justify-between text-xs">
+                        <div>
+                            <strong class="font-bold block text-slate-900">${t.name}</strong>
+                            <span class="text-[10px] text-slate-500">${t.outlet}</span>
+                        </div>
+                        <div>${statusBadge}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderDailyReportsLog() {
+            const tableBody = document.getElementById('daily-reports-log-table');
+            const badgeCount = document.getElementById('log-count-badge');
+            if (!tableBody) return;
+
+            const startDateFilter = document.getElementById('filter-log-start')?.value;
+            const endDateFilter = document.getElementById('filter-log-end')?.value;
+            const traineeFilter = document.getElementById('filter-log-trainee')?.value || 'ALL';
+
+            let filteredLogs = [...dailyReportsData];
+
+            if (startDateFilter) {
+                filteredLogs = filteredLogs.filter(log => log.date >= startDateFilter);
+            }
+            if (endDateFilter) {
+                filteredLogs = filteredLogs.filter(log => log.date <= endDateFilter);
+            }
+            if (traineeFilter && traineeFilter !== 'ALL') {
+                filteredLogs = filteredLogs.filter(log => log.traineeId === traineeFilter);
+            }
+
+            filteredLogs.sort((a, b) => new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date));
+
+            if (badgeCount) badgeCount.textContent = `${filteredLogs.length} Log Ditemukan`;
+
+            if (filteredLogs.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="p-4 text-center text-slate-400 font-medium">
+                            Tidak ada log laporan harian pada periode/filter ini.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tableBody.innerHTML = filteredLogs.map(log => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3 font-mono">
+                        <strong class="block text-slate-900 font-bold">${log.date}</strong>
+                        <span class="text-[10px] text-slate-500">${log.time || '--:--'}</span>
+                    </td>
+                    <td class="p-3">
+                        <strong class="font-bold text-slate-900 block">${log.traineeName || 'Crew OJT'}</strong>
+                        <span class="text-[10px] text-slate-500">${log.outlet || '-'}</span>
+                    </td>
+                    <td class="p-3">
+                        <span class="px-2 py-0.5 rounded-md font-extrabold text-[10px] uppercase ${log.shiftMode === 'awal' ? 'bg-amber-100 text-amber-900' : 'bg-indigo-100 text-indigo-900'}">
+                            Shift ${log.shiftMode || 'Awal'}
+                        </span>
+                    </td>
+                    <td class="p-3 max-w-xs">
+                        <p class="font-medium text-slate-800 line-clamp-2 text-[11px]">${log.penugasanText || log.fullText || '-'}</p>
+                        ${log.feedbackText ? `<span class="text-[10px] text-mri-700 font-bold block mt-0.5">FB: ${log.feedbackText}</span>` : ''}
+                    </td>
+                    <td class="p-3 text-center">
+                        <div class="flex items-center justify-center space-x-1">
+                            <button onclick="openEditReportLogModal('${log.id}')" class="px-2 py-1 bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold rounded-lg text-[10px]">
+                                <i class="fa-solid fa-pen mr-0.5"></i> Edit
+                            </button>
+                            <button onclick="confirmDeleteReportLog('${log.id}')" class="px-2 py-1 bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold rounded-lg text-[10px]">
+                                <i class="fa-solid fa-trash mr-0.5"></i> Hapus
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openEditReportLogModal(logId) {
+            editReportLogId = logId;
+            const log = dailyReportsData.find(l => l.id === logId);
+            if (!log) return;
+
+            document.getElementById('edit-log-date').value = log.date || getTodayString();
+            document.getElementById('edit-log-shift').value = log.shiftMode || 'awal';
+            document.getElementById('edit-log-penugasan').value = log.penugasanText || '';
+            document.getElementById('edit-log-feedback').value = log.feedbackText || '';
+
+            document.getElementById('modal-edit-report-log').classList.remove('hidden');
+        }
+
+        function closeEditReportLogModal() {
+            document.getElementById('modal-edit-report-log').classList.add('hidden');
+            editReportLogId = null;
+        }
+
+        function saveEditReportLog() {
+            if (!editReportLogId) return;
+            const log = dailyReportsData.find(l => l.id === editReportLogId);
+            if (log) {
+                log.date = document.getElementById('edit-log-date').value;
+                log.shiftMode = document.getElementById('edit-log-shift').value;
+                log.penugasanText = document.getElementById('edit-log-penugasan').value.trim();
+                log.feedbackText = document.getElementById('edit-log-feedback').value.trim();
+
+                if (db) {
+                    setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dailyReports', editReportLogId), log, { merge: true }).catch(console.error);
+                }
+
+                renderDailyReportsLog();
+            }
+            closeEditReportLogModal();
+        }
+
+        function confirmDeleteReportLog(logId) {
+            deleteReportLogId = logId;
+            document.getElementById('modal-delete-report-log').classList.remove('hidden');
+        }
+
+        function closeDeleteReportLogModal() {
+            document.getElementById('modal-delete-report-log').classList.add('hidden');
+            deleteReportLogId = null;
+        }
+
+        function executeDeleteReportLog() {
+            if (!deleteReportLogId) return;
+            dailyReportsData = dailyReportsData.filter(l => l.id !== deleteReportLogId);
+
+            if (db) {
+                deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dailyReports', deleteReportLogId)).catch(console.error);
+            }
+
+            renderLiveSubmissionGrid();
+            renderDailyReportsLog();
+            renderAnalyticsDashboard();
+            closeDeleteReportLogModal();
+        }
+
+        function confirmResetTodayReports() {
+            document.getElementById('modal-reset-today').classList.remove('hidden');
+        }
+
+        function closeResetTodayModal() {
+            document.getElementById('modal-reset-today').classList.add('hidden');
+        }
+
+        async function executeResetTodayReports() {
+            const todayStr = getTodayString();
+            const todayLogs = dailyReportsData.filter(l => l.date === todayStr);
+
+            if (db) {
+                try {
+                    for (const log of todayLogs) {
+                        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dailyReports', log.id));
+                    }
+                } catch(e) {
+                    console.error("Error clearing today reports:", e);
+                }
+            }
+
+            dailyReportsData = dailyReportsData.filter(l => l.date !== todayStr);
+            renderLiveSubmissionGrid();
+            renderDailyReportsLog();
+            renderAnalyticsDashboard();
+            closeResetTodayModal();
+        }
+
+        function handleDashboardNavClick() {
+            if (isAdminUnlocked) {
+                switchMainView('dashboard');
+            } else {
+                document.getElementById('modal-admin-login').classList.remove('hidden');
+            }
+        }
+
+        function closeAdminLoginModal() {
+            document.getElementById('modal-admin-login').classList.add('hidden');
+            document.getElementById('admin-password-error').classList.add('hidden');
+        }
+
+        function submitAdminLogin() {
+            const pass = document.getElementById('admin-password-input').value;
+            if (pass === 'mri2026') {
+                isAdminUnlocked = true;
+                closeAdminLoginModal();
+                switchMainView('dashboard');
+                const badgeMobile = document.getElementById('admin-unlocked-badge-mobile');
+                if (badgeMobile) badgeMobile.classList.remove('hidden');
+            } else {
+                document.getElementById('admin-password-error').classList.remove('hidden');
+            }
+        }
+
+        function lockAdmin() {
+            isAdminUnlocked = false;
+            switchMainView('laporan');
+            const badgeMobile = document.getElementById('admin-unlocked-badge-mobile');
+            if (badgeMobile) badgeMobile.classList.add('hidden');
+        }
+
+        function checkRoadmapDay() {
+            const input = document.getElementById('input-roadmap-day');
+            const resultBox = document.getElementById('roadmap-day-result');
+            if (!input || !resultBox) return;
+
+            const dayNum = parseInt(input.value) || 1;
+            const targetInfo = getRoadmapTargetForDay(dayNum);
+
+            resultBox.innerHTML = `<strong>Target Kompetensi ${targetInfo}</strong>`;
+            resultBox.classList.remove('hidden');
+        }
+
+        function calculateTraineeKPI(t) {
+            const dayInfo = calculateDaysAndPhase(t.startDate);
+            const activeTasks = ojtTasksData.filter(task => task.stage === dayInfo.stageId || task.id <= 2);
+            
+            const completedCount = (t.completedTasks || []).filter(tid => activeTasks.some(at => at.id === tid)).length;
+            const taskScore = activeTasks.length > 0 ? (completedCount / activeTasks.length) * 30 : 0;
+
+            const sholatCount = Math.min((t.completedSholat || []).length, 5);
+            const sholatScore = (sholatCount / 5) * 20;
+
+            const hasAwal = (t.awalText && t.awalText.trim().length > 5) ? 20 : 0;
+            const hasAkhir = (t.akhirText && t.akhirText.trim().length > 5) ? 20 : 0;
+            const manualScore = hasAwal + hasAkhir;
+
+            const todayStr = getTodayString();
+            const sentAwal = dailyReportsData.some(r => r.traineeId === t.id && r.date === todayStr && r.shiftMode === 'awal');
+            const sentAkhir = dailyReportsData.some(r => r.traineeId === t.id && r.date === todayStr && r.shiftMode === 'akhir');
+            const disciplineScore = (sentAwal ? 5 : 0) + (sentAkhir ? 5 : 0);
+
+            const totalScore = Math.min(100, Math.max(0, Math.round(taskScore + sholatScore + manualScore + disciplineScore)));
+            return { totalScore, taskScore, sholatScore, manualScore, disciplineScore, completedCount, activeTasksCount: activeTasks.length };
+        }
+
+        function renderAnalyticsDashboard() {
+            const leaderboardList = document.getElementById('crew-leaderboard-list');
+            const podiumContainer = document.getElementById('podium-container');
+            const diligenceContainer = document.getElementById('diligence-matrix-container');
+            const swotContainer = document.getElementById('swot-matrix-container');
+
+            if (!leaderboardList) return;
+
+            const rankedTrainees = traineesData.map(t => ({
+                ...t,
+                kpi: calculateTraineeKPI(t)
+            })).sort((a, b) => b.kpi.totalScore - a.kpi.totalScore);
+
+            if (podiumContainer) {
+                if (rankedTrainees.length >= 3) {
+                    podiumContainer.innerHTML = `
+                        <div class="space-y-1">
+                            <div class="bg-slate-200 p-2 rounded-t-xl h-20 flex items-center justify-center font-black text-slate-700">#2</div>
+                            <p class="truncate text-[10px]">${rankedTrainees[1].name}</p>
+                            <span class="text-mri-700 font-bold">${rankedTrainees[1].kpi.totalScore}%</span>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="bg-amber-300 p-2 rounded-t-xl h-28 flex items-center justify-center font-black text-mri-950 text-base">👑 #1</div>
+                            <p class="truncate text-[10px] font-black">${rankedTrainees[0].name}</p>
+                            <span class="text-mri-700 font-black">${rankedTrainees[0].kpi.totalScore}%</span>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="bg-amber-100 p-2 rounded-t-xl h-16 flex items-center justify-center font-black text-amber-900">#3</div>
+                            <p class="truncate text-[10px]">${rankedTrainees[2].name}</p>
+                            <span class="text-mri-700 font-bold">${rankedTrainees[2].kpi.totalScore}%</span>
+                        </div>
+                    `;
+                } else if (rankedTrainees.length > 0) {
+                    podiumContainer.innerHTML = `
+                        <div class="col-span-3 p-3 bg-amber-50 rounded-xl text-center">
+                            <strong class="text-slate-800 block font-bold">Top Rank: ${rankedTrainees[0].name} (${rankedTrainees[0].kpi.totalScore}%)</strong>
+                        </div>
+                    `;
+                } else {
+                    podiumContainer.innerHTML = '';
+                }
+            }
+
+            leaderboardList.innerHTML = rankedTrainees.map((t, idx) => `
+                <div class="p-2.5 flex items-center justify-between hover:bg-slate-50">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-black text-slate-400 w-5 text-center">${idx + 1}</span>
+                        <div>
+                            <strong class="font-bold text-slate-900 block">${t.name}</strong>
+                            <span class="text-[10px] text-slate-500">${t.outlet} • Captain: ${t.captain}</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="font-black text-mri-700 text-sm">${t.kpi.totalScore}% KPI</span>
+                        <span class="block text-[10px] text-slate-400">${t.kpi.completedCount}/${t.kpi.activeTasksCount} Tugas</span>
+                    </div>
+                </div>
+            `).join('');
+
+            if (diligenceContainer) {
+                diligenceContainer.innerHTML = rankedTrainees.map(t => `
+                    <div class="p-2 bg-slate-50 rounded-xl border flex items-center justify-between">
+                        <span class="font-bold text-slate-800">${t.name}</span>
+                        <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-black text-[10px]">+${t.kpi.disciplineScore}% Skor Rajin</span>
+                    </div>
+                `).join('');
+            }
+
+            if (swotContainer) {
+                swotContainer.innerHTML = rankedTrainees.map(t => {
+                    const isHigh = t.kpi.totalScore >= 75;
+                    return `
+                        <div class="p-3 bg-slate-50 rounded-xl border space-y-1.5">
+                            <div class="flex justify-between items-center">
+                                <strong class="font-bold text-slate-900">${t.name}</strong>
+                                <span class="px-2 py-0.5 rounded font-black text-[10px] ${isHigh ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${isHigh ? 'Perform Sesuai Target' : 'Perlu Pendampingan'}</span>
+                            </div>
+                            <p class="text-slate-600 text-[11px]">💪 <strong>Kelebihan</strong>: Ceklis Tugas (${t.kpi.completedCount} selesai), Sholat ${t.completedSholat?.length || 0}/5</p>
+                            <p class="text-slate-600 text-[11px]">⚠️ <strong>Catatan Evaluasi</strong>: ${t.akhirText ? 'Laporan Akhir Terisi' : 'Laporan Akhir Perlu Dilengkapi'}</p>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function refreshFirebaseStats() {
+            const countTrainees = document.getElementById('stat-count-trainees');
+            const countOutlets = document.getElementById('stat-count-outlets');
+            const countReports = document.getElementById('stat-count-reports');
+
+            if (countTrainees) countTrainees.textContent = `${traineesData.length} Orang`;
+            if (countOutlets) countOutlets.textContent = `${outletsData.length} Outlet`;
+            if (countReports) countReports.textContent = `${dailyReportsData.length} Dokumen`;
+        }
+
+        function renderAdminMasterLists() {
+            const groomingList = document.getElementById('grooming-list');
+            if (groomingList) {
+                groomingList.innerHTML = groomingOptionsData.map((g, idx) => `
+                    <div class="p-2 flex items-center justify-between text-xs hover:bg-slate-50">
+                        <span class="font-medium text-slate-800">${g}</span>
+                        <div class="flex items-center space-x-1 shrink-0">
+                            <button onclick="openEditGroomingModal(${idx})" class="p-1 px-2 bg-amber-100 text-amber-800 hover:bg-amber-200 font-bold rounded-lg text-[10px]">
+                                <i class="fa-solid fa-pen mr-0.5"></i> Edit
+                            </button>
+                            <button onclick="deleteGroomingOption(${idx})" class="p-1 px-2 bg-rose-100 text-rose-700 hover:bg-rose-200 font-bold rounded-lg text-[10px]">
+                                <i class="fa-solid fa-trash mr-0.5"></i> Hapus
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                document.getElementById('badge-count-grooming').textContent = `${groomingOptionsData.length} Opsi`;
+            }
+
+            const customQuestionsList = document.getElementById('custom-questions-admin-list');
+            if (customQuestionsList) {
+                customQuestionsList.innerHTML = customQuestionsData.map((q, idx) => `
+                    <div class="p-2 flex items-center justify-between text-xs hover:bg-slate-50">
+                        <div>
+                            <strong class="font-bold text-slate-900 block">${q.question}</strong>
+                            <span class="text-[10px] px-1.5 py-0.5 rounded font-bold ${q.shift === 'awal' ? 'bg-amber-100 text-amber-800' : 'bg-indigo-100 text-indigo-800'}">Shift ${q.shift.toUpperCase()}</span>
+                            <span class="text-[10px] text-slate-500">${q.options?.length > 0 ? `Dropdown (${q.options.length} pilihan)` : 'Teks Bebas'}</span>
+                        </div>
+                        <div class="flex items-center space-x-1 shrink-0">
+                            <button onclick="openEditQuestionModal(${idx})" class="p-1 px-2 bg-amber-100 text-amber-800 hover:bg-amber-200 font-bold rounded-lg text-[10px]">
+                                <i class="fa-solid fa-pen mr-0.5"></i> Edit
+                            </button>
+                            <button onclick="deleteCustomQuestion(${idx})" class="p-1 px-2 bg-rose-100 text-rose-700 hover:bg-rose-200 font-bold rounded-lg text-[10px]">
+                                <i class="fa-solid fa-trash mr-0.5"></i> Hapus
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                document.getElementById('badge-count-questions').textContent = `${customQuestionsData.length} Pertanyaan`;
+            }
+
+            const outletsList = document.getElementById('outlets-list');
+            if (outletsList) {
+                outletsList.innerHTML = outletsData.map((o, idx) => `
+                    <div class="p-2 flex items-center justify-between text-xs hover:bg-slate-50">
+                        <span class="font-medium text-slate-800">${o}</span>
+                        <div class="flex items-center space-x-1 shrink-0">
+                            <button onclick="openEditOutletModal(${idx})" class="p-1 px-2 bg-amber-100 text-amber-800 hover:bg-amber-200 font-bold rounded-lg text-[10px]">
+                                <i class="fa-solid fa-pen mr-0.5"></i> Edit
+                            </button>
+                            <button onclick="deleteOutlet(${idx})" class="p-1 px-2 bg-rose-100 text-rose-700 hover:bg-rose-200 font-bold rounded-lg text-[10px]">
+                                <i class="fa-solid fa-trash mr-0.5"></i> Hapus
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                document.getElementById('badge-count-outlet').textContent = `${outletsData.length} Outlet`;
+            }
+
+            const captainsList = document.getElementById('captains-list');
+            if (captainsList) {
+                captainsList.innerHTML = captainsData.map((c, idx) => `
+                    <div class="p-2 flex items-center justify-between text-xs hover:bg-slate-50">
+                        <span class="font-medium text-slate-800">${c}</span>
+                        <div class="flex items-center space-x-1 shrink-0">
+                            <button onclick="openEditCaptainModal(${idx})" class="p-1 px-2 bg-amber-100 text-amber-800 hover:bg-amber-200 font-bold rounded-lg text-[10px]">
+                                <i class="fa-solid fa-pen mr-0.5"></i> Edit
+                            </button>
+                            <button onclick="deleteCaptain(${idx})" class="p-1 px-2 bg-rose-100 text-rose-700 hover:bg-rose-200 font-bold rounded-lg text-[10px]">
+                                <i class="fa-solid fa-trash mr-0.5"></i> Hapus
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                document.getElementById('badge-count-captain').textContent = `${captainsData.length} Captain`;
+            }
+
+            const waList = document.getElementById('wa-numbers-list');
+            if (waList) {
+                waList.innerHTML = waNumbersData.map((wa, idx) => `
+                    <div class="p-2 flex items-center justify-between text-xs hover:bg-slate-50">
+                        <div>
+                            <strong class="font-bold text-slate-900 block">${wa.label}</strong>
+                            <span class="font-mono text-[10px] text-emerald-700 font-bold">${wa.phone}</span>
+                        </div>
+                        <div class="flex items-center space-x-1 shrink-0">
+                            <button onclick="openEditWAModal(${idx})" class="p-1 px-2 bg-amber-100 text-amber-800 hover:bg-amber-200 font-bold rounded-lg text-[10px]">
+                                <i class="fa-solid fa-pen mr-0.5"></i> Edit
+                            </button>
+                            <button onclick="deleteWANumber(${idx})" class="p-1 px-2 bg-rose-100 text-rose-700 hover:bg-rose-200 font-bold rounded-lg text-[10px]">
+                                <i class="fa-solid fa-trash mr-0.5"></i> Hapus
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                document.getElementById('badge-count-wa').textContent = `${waNumbersData.length} Nomor`;
+            }
+
+            const traineesTable = document.getElementById('trainees-admin-table');
+            if (traineesTable) {
+                traineesTable.innerHTML = traineesData.map((t) => {
+                    const dayInfo = calculateDaysAndPhase(t.startDate);
+                    return `
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 font-bold text-slate-900">${t.name}</td>
+                            <td class="p-3">${t.outlet}</td>
+                            <td class="p-3">${t.captain}</td>
+                            <td class="p-3 font-mono">${t.startDate}</td>
+                            <td class="p-3 font-mono text-amber-700 font-bold">${dayInfo.endDateStr}</td>
+                            <td class="p-3 text-center">
+                                <div class="flex items-center justify-center space-x-1">
+                                    <button onclick="openEditTraineeModal('${t.id}')" class="px-2 py-1 bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold rounded-lg text-[10px]">
+                                        <i class="fa-solid fa-user-pen mr-0.5"></i> Edit
+                                    </button>
+                                    <button onclick="confirmDeleteTrainee('${t.id}')" class="px-2 py-1 bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold rounded-lg text-[10px]">
+                                        <i class="fa-solid fa-user-xmark mr-0.5"></i> Hapus
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+        }
+
+        function addGroomingOption() {
+            const input = document.getElementById('input-new-grooming');
+            if (!input || !input.value.trim()) return;
+            groomingOptionsData.push(input.value.trim());
+            input.value = '';
+            populateSelectors(true);
+            renderAdminMasterLists();
+            if (db) setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'groomingOptions'), { list: groomingOptionsData });
+        }
+
+        function openEditGroomingModal(idx) {
+            editGroomingIndex = idx;
+            document.getElementById('edit-grooming-text').value = groomingOptionsData[idx] || '';
+            document.getElementById('modal-edit-grooming').classList.remove('hidden');
+        }
+
+        function closeEditGroomingModal() {
+            document.getElementById('modal-edit-grooming').classList.add('hidden');
+            editGroomingIndex = null;
+        }
+
+        function saveEditGrooming() {
+            if (editGroomingIndex === null) return;
+            const val = document.getElementById('edit-grooming-text').value.trim();
+            if (val) {
+                groomingOptionsData[editGroomingIndex] = val;
+                populateSelectors(true);
+                renderAdminMasterLists();
+                if (db) setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'groomingOptions'), { list: groomingOptionsData });
+            }
+            closeEditGroomingModal();
+        }
+
+        function deleteGroomingOption(idx) {
+            groomingOptionsData.splice(idx, 1);
+            populateSelectors(true);
+            renderAdminMasterLists();
+            if (db) setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'groomingOptions'), { list: groomingOptionsData });
+        }
+
+        function addCustomQuestion() {
+            const textInput = document.getElementById('input-question-text');
+            const shiftSelect = document.getElementById('input-question-shift');
+            const optionsInput = document.getElementById('input-question-options');
+
+            if (!textInput || !textInput.value.trim()) return;
+
+            const opts = optionsInput.value.trim() ? optionsInput.value.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const newQ = {
+                id: 'q_' + Date.now(),
+                question: textInput.value.trim(),
+                shift: shiftSelect.value,
+                options: opts
+            };
+
+            customQuestionsData.push(newQ);
+            textInput.value = '';
+            optionsInput.value = '';
+
+            renderCustomQuestionsContainers();
+            renderAdminMasterLists();
+            if (db) setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'customQuestions'), { list: customQuestionsData });
+        }
+
+        function openEditQuestionModal(idx) {
+            editQuestionIndex = idx;
+            const q = customQuestionsData[idx];
+            if (!q) return;
+
+            document.getElementById('edit-question-text').value = q.question || '';
+            document.getElementById('edit-question-shift').value = q.shift || 'awal';
+            document.getElementById('edit-question-options').value = q.options ? q.options.join(', ') : '';
+            document.getElementById('modal-edit-question').classList.remove('hidden');
+        }
+
+        function closeEditQuestionModal() {
+            document.getElementById('modal-edit-question').classList.add('hidden');
+            editQuestionIndex = null;
+        }
+
+        function saveEditQuestion() {
+            if (editQuestionIndex === null) return;
+            const text = document.getElementById('edit-question-text').value.trim();
+            const shift = document.getElementById('edit-question-shift').value;
+            const optsText = document.getElementById('edit-question-options').value.trim();
+            const opts = optsText ? optsText.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+            if (text) {
+                customQuestionsData[editQuestionIndex].question = text;
+                customQuestionsData[editQuestionIndex].shift = shift;
+                customQuestionsData[editQuestionIndex].options = opts;
+
+                renderCustomQuestionsContainers();
+                renderAdminMasterLists();
+                if (db) setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'customQuestions'), { list: customQuestionsData });
+            }
+            closeEditQuestionModal();
+        }
+
+        function deleteCustomQuestion(idx) {
+            customQuestionsData.splice(idx, 1);
+            renderCustomQuestionsContainers();
+            renderAdminMasterLists();
+            if (db) setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'customQuestions'), { list: customQuestionsData });
+        }
+
+        function addNewOutlet() {
+            const input = document.getElementById('input-new-outlet');
+            if (!input || !input.value.trim()) return;
+            outletsData.push(input.value.trim());
+            input.value = '';
+            populateSelectors(true);
+            renderAdminMasterLists();
+            if (db) setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'outlets'), { list: outletsData });
+        }
+
+        function openEditOutletModal(idx) {
+            editOutletIndex = idx;
+            document.getElementById('edit-outlet-text').value = outletsData[idx] || '';
+            document.getElementById('modal-edit-outlet').classList.remove('hidden');
+        }
+
+        function closeEditOutletModal() {
+            document.getElementById('modal-edit-outlet').classList.add('hidden');
+            editOutletIndex = null;
+        }
+
+        function saveEditOutlet() {
+            if (editOutletIndex === null) return;
+            const val = document.getElementById('edit-outlet-text').value.trim();
+            if (val) {
+                outletsData[editOutletIndex] = val;
+                populateSelectors(true);
+                renderAdminMasterLists();
+                if (db) setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'outlets'), { list: outletsData });
+            }
+            closeEditOutletModal();
+        }
+
+        function deleteOutlet(idx) {
+            outletsData.splice(idx, 1);
+            populateSelectors(true);
+            renderAdminMasterLists();
+            if (db) setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'outlets'), { list: outletsData });
+        }
+
+        function addNewCaptain() {
+            const input = document.getElementById('input-new-captain');
+            if (!input || !input.value.trim()) return;
+            captainsData.push(input.value.trim());
+            input.value = '';
+            populateSelectors(true);
+            renderAdminMasterLists();
+            if (db) setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'captains'), { list: captainsData });
+        }
+
+        function openEditCaptainModal(idx) {
+            editCaptainIndex = idx;
+            document.getElementById('edit-captain-text').value = captainsData[idx] || '';
+            document.getElementById('modal-edit-captain').classList.remove('hidden');
+        }
+
+        function closeEditCaptainModal() {
+            document.getElementById('modal-edit-captain').classList.add('hidden');
+            editCaptainIndex = null;
+        }
+
+        function saveEditCaptain() {
+            if (editCaptainIndex === null) return;
+            const val = document.getElementById('edit-captain-text').value.trim();
+            if (val) {
+                captainsData[editCaptainIndex] = val;
+                populateSelectors(true);
+                renderAdminMasterLists();
+                if (db) setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'captains'), { list: captainsData });
+            }
+            closeEditCaptainModal();
+        }
+
+        function deleteCaptain(idx) {
+            captainsData.splice(idx, 1);
+            populateSelectors(true);
+            renderAdminMasterLists();
+            if (db) setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'captains'), { list: captainsData });
+        }
+
+        function addNewWANumber() {
+            const labelInput = document.getElementById('input-wa-label');
+            const phoneInput = document.getElementById('input-wa-phone');
+            if (!labelInput || !phoneInput || !phoneInput.value.trim()) return;
+            waNumbersData.push({ label: labelInput.value.trim() || 'PDC', phone: phoneInput.value.trim() });
+            labelInput.value = '';
+            phoneInput.value = '';
+            populateSelectors(true);
+            renderAdminMasterLists();
+            if (db) setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'waNumbers'), { list: waNumbersData });
+        }
+
+        function openEditWAModal(idx) {
+            editWAIndex = idx;
+            const wa = waNumbersData[idx];
+            if (!wa) return;
+            document.getElementById('edit-wa-label').value = wa.label || '';
+            document.getElementById('edit-wa-phone').value = wa.phone || '';
+            document.getElementById('modal-edit-wa').classList.remove('hidden');
+        }
+
+        function closeEditWAModal() {
+            document.getElementById('modal-edit-wa').classList.add('hidden');
+            editWAIndex = null;
+        }
+
+        function saveEditWA() {
+            if (editWAIndex === null) return;
+            const label = document.getElementById('edit-wa-label').value.trim();
+            const phone = document.getElementById('edit-wa-phone').value.trim();
+            if (phone) {
+                waNumbersData[editWAIndex] = { label: label || 'PDC Target', phone };
+                populateSelectors(true);
+                renderAdminMasterLists();
+                if (db) setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'waNumbers'), { list: waNumbersData });
+            }
+            closeEditWAModal();
+        }
+
+        function deleteWANumber(idx) {
+            waNumbersData.splice(idx, 1);
+            populateSelectors(true);
+            renderAdminMasterLists();
+            if (db) setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'waNumbers'), { list: waNumbersData });
+        }
+
+        function addNewTrainee() {
+            const name = document.getElementById('new-trainee-name')?.value.trim();
+            const outlet = document.getElementById('new-trainee-outlet')?.value;
+            const captain = document.getElementById('new-trainee-captain')?.value;
+            const startDate = document.getElementById('new-trainee-startdate')?.value || getTodayString();
+
+            if (!name) return;
+
+            const newId = 't_' + Date.now();
+            const newTrainee = {
+                id: newId,
+                name,
+                outlet,
+                captain,
+                startDate,
+                completedTasks: [],
+                completedSholat: [],
+                awalText: "",
+                awalFeedback: "",
+                akhirText: "",
+                akhirTerlewat: "",
+                akhirCaptainNotes: "",
+                customAnswers: {}
+            };
+
+            traineesData.push(newTrainee);
+            populateSelectors(true);
+            renderAdminMasterLists();
+
+            if (db) {
+                setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'trainees', newId), newTrainee).catch(console.error);
+                setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'system'), { initialized: true }, { merge: true }).catch(console.error);
+            }
+
+            document.getElementById('new-trainee-name').value = '';
+        }
+
+        function openEditTraineeModal(id) {
+            editTraineeId = id;
+            const t = traineesData.find(tr => tr.id === id);
+            if (!t) return;
+
+            document.getElementById('edit-trainee-outlet').innerHTML = outletsData.map(o => `<option value="${o}">${o}</option>`).join('');
+            document.getElementById('edit-trainee-captain').innerHTML = captainsData.map(c => `<option value="${c}">${c}</option>`).join('');
+
+            document.getElementById('edit-trainee-name').value = t.name || '';
+            document.getElementById('edit-trainee-outlet').value = t.outlet || outletsData[0];
+            document.getElementById('edit-trainee-captain').value = t.captain || captainsData[0];
+            document.getElementById('edit-trainee-startdate').value = t.startDate || getTodayString();
+
+            document.getElementById('modal-edit-trainee').classList.remove('hidden');
+        }
+
+        function closeEditTraineeModal() {
+            document.getElementById('modal-edit-trainee').classList.add('hidden');
+            editTraineeId = null;
+        }
+
+        function saveEditTrainee() {
+            if (!editTraineeId) return;
+            const t = traineesData.find(tr => tr.id === editTraineeId);
+            if (t) {
+                t.name = document.getElementById('edit-trainee-name').value.trim() || t.name;
+                t.outlet = document.getElementById('edit-trainee-outlet').value;
+                t.captain = document.getElementById('edit-trainee-captain').value;
+                t.startDate = document.getElementById('edit-trainee-startdate').value;
+
+                populateSelectors(true);
+                renderAdminMasterLists();
+
+                if (db) {
+                    setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'trainees', editTraineeId), {
+                        name: t.name,
+                        outlet: t.outlet,
+                        captain: t.captain,
+                        startDate: t.startDate
+                    }, { merge: true }).catch(console.error);
+                }
+            }
+            closeEditTraineeModal();
+        }
+
+        let pendingDeleteTraineeId = null;
+        function confirmDeleteTrainee(id) {
+            pendingDeleteTraineeId = id;
+            document.getElementById('modal-delete-trainee').classList.remove('hidden');
+        }
+
+        function closeDeleteTraineeModal() {
+            document.getElementById('modal-delete-trainee').classList.add('hidden');
+            pendingDeleteTraineeId = null;
+        }
+
+        function executeDeleteTrainee() {
+            if (!pendingDeleteTraineeId) return;
+            const idToDelete = pendingDeleteTraineeId;
+            traineesData = traineesData.filter(t => t.id !== idToDelete);
+
+            if (currentSelectedTraineeId === idToDelete) {
+                currentSelectedTraineeId = null;
+            }
+
+            populateSelectors(false);
+            renderAdminMasterLists();
+
+            if (db) {
+                deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'trainees', idToDelete)).catch(console.error);
+            }
+
+            closeDeleteTraineeModal();
+        }
+
+        function setBannerPreset(text) {
+            const input = document.getElementById('input-banner-text');
+            if (input) input.value = text;
+        }
+
+        function saveBannerInstruction() {
+            const text = document.getElementById('input-banner-text')?.value.trim();
+            if (!text) return;
+            document.getElementById('running-banner-text').textContent = text;
+            if (db) {
+                setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'banner'), { text }).catch(console.error);
+            }
+        }
+
+        function confirmResetDatabase() {
+            document.getElementById('modal-reset-db').classList.remove('hidden');
+        }
+
+        function closeResetModal() {
+            document.getElementById('modal-reset-db').classList.add('hidden');
+        }
+
+        async function executeDatabaseReset() {
+            if (db) {
+                try {
+                    const snapTrainees = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'trainees'));
+                    snapTrainees.forEach(d => deleteDoc(d.ref));
+
+                    const snapReports = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'dailyReports'));
+                    snapReports.forEach(d => deleteDoc(d.ref));
+                } catch(e) {
+                    console.error("Error wiping Firestore docs:", e);
+                }
+            }
+
+            traineesData = [];
+            dailyReportsData = [];
+            currentSelectedTraineeId = null;
+
+            populateSelectors(false);
+            renderLiveSubmissionGrid();
+            renderAdminMasterLists();
+            renderDailyReportsLog();
+            closeResetModal();
+        }
+
+        // Global function bindings
+        window.populateSelectors = populateSelectors;
+        window.onTraineeChange = (preserveInputs) => onTraineeChange(preserveInputs);
+        window.switchShiftMode = switchShiftMode;
+        window.switchMainView = switchMainView;
+        window.toggleSholat = toggleSholat;
+        window.toggleTask = toggleTask;
+        window.generateWAPreview = generateWAPreview;
+        window.dispatchWhatsAppReport = dispatchWhatsAppReport;
+        window.handleDashboardNavClick = handleDashboardNavClick;
+        window.closeAdminLoginModal = closeAdminLoginModal;
+        window.submitAdminLogin = submitAdminLogin;
+        window.lockAdmin = lockAdmin;
+        window.checkRoadmapDay = checkRoadmapDay;
+        window.closeAppAlertModal = closeAppAlertModal;
+
+        window.renderDailyReportsLog = renderDailyReportsLog;
+        window.openEditReportLogModal = openEditReportLogModal;
+        window.closeEditReportLogModal = closeEditReportLogModal;
+        window.saveEditReportLog = saveEditReportLog;
+        window.confirmDeleteReportLog = confirmDeleteReportLog;
+        window.closeDeleteReportLogModal = closeDeleteReportLogModal;
+        window.executeDeleteReportLog = executeDeleteReportLog;
+        window.confirmResetTodayReports = confirmResetTodayReports;
+        window.closeResetTodayModal = closeResetTodayModal;
+        window.executeResetTodayReports = executeResetTodayReports;
+
+        window.addGroomingOption = addGroomingOption;
+        window.openEditGroomingModal = openEditGroomingModal;
+        window.closeEditGroomingModal = closeEditGroomingModal;
+        window.saveEditGrooming = saveEditGrooming;
+        window.deleteGroomingOption = deleteGroomingOption;
+
+        window.addCustomQuestion = addCustomQuestion;
+        window.openEditQuestionModal = openEditQuestionModal;
+        window.closeEditQuestionModal = closeEditQuestionModal;
+        window.saveEditQuestion = saveEditQuestion;
+        window.deleteCustomQuestion = deleteCustomQuestion;
+
+        window.addNewOutlet = addNewOutlet;
+        window.openEditOutletModal = openEditOutletModal;
+        window.closeEditOutletModal = closeEditOutletModal;
+        window.saveEditOutlet = saveEditOutlet;
+        window.deleteOutlet = deleteOutlet;
+
+        window.addNewCaptain = addNewCaptain;
+        window.openEditCaptainModal = openEditCaptainModal;
+        window.closeEditCaptainModal = closeEditCaptainModal;
+        window.saveEditCaptain = saveEditCaptain;
+        window.deleteCaptain = deleteCaptain;
+
+        window.addNewWANumber = addNewWANumber;
+        window.openEditWAModal = openEditWAModal;
+        window.closeEditWAModal = closeEditWAModal;
+        window.saveEditWA = saveEditWA;
+        window.deleteWANumber = deleteWANumber;
+
+        window.addNewTrainee = addNewTrainee;
+        window.openEditTraineeModal = openEditTraineeModal;
+        window.closeEditTraineeModal = closeEditTraineeModal;
+        window.saveEditTrainee = saveEditTrainee;
+        window.confirmDeleteTrainee = confirmDeleteTrainee;
+        window.closeDeleteTraineeModal = closeDeleteTraineeModal;
+        window.executeDeleteTrainee = executeDeleteTrainee;
+
+        window.setBannerPreset = setBannerPreset;
+        window.saveBannerInstruction = saveBannerInstruction;
+        window.confirmResetDatabase = confirmResetDatabase;
+        window.closeResetModal = closeResetModal;
+        window.executeDatabaseReset = executeDatabaseReset;
+        window.refreshFirebaseStats = refreshFirebaseStats;
+
+        async function setupFirestoreRealtimeListeners() {
+            if (!db) return;
+
+            const statusDot = document.getElementById('firebase-dot');
+            const statusText = document.getElementById('firebase-status-text');
+            if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+            if (statusText) statusText.textContent = "Firebase Live";
+
+            // Check if system has been initialized before
+            const systemDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'config', 'system');
+            let sysSnap = null;
+            try {
+                sysSnap = await getDoc(systemDocRef);
+            } catch(e) {
+                console.warn("System init check note:", e);
+            }
+
+            if (!sysSnap || !sysSnap.exists() || !sysSnap.data().initialized) {
+                try {
+                    for (const t of defaultTraineesList) {
+                        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'trainees', t.id), t);
+                    }
+                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'outlets'), { list: defaultOutletsData });
+                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'captains'), { list: defaultCaptainsData });
+                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'waNumbers'), { list: defaultWaNumbersData });
+                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'groomingOptions'), { list: defaultGroomingOptionsData });
+                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', 'banner'), { text: "Selamat Datang di Sistem Laporan Harian OJT PT. Minum Rempah Indonesia. Kirimkan Laporan Awal saat tiba & Laporan Akhir sebelum pulang!" });
+                    await setDoc(systemDocRef, { initialized: true });
+                } catch(e) {
+                    console.error("Error seeding initial data:", e);
+                }
+            }
+
+            // REALTIME SYNC TRAINEES (Preserving active local form inputs in memory)
+            const traineesRef = collection(db, 'artifacts', appId, 'public', 'data', 'trainees');
+            onSnapshot(traineesRef, (snap) => {
+                if (currentSelectedTraineeId) {
+                    saveCurrentFormToTrainee(currentSelectedTraineeId);
+                }
+
+                const list = [];
+                snap.forEach(d => {
+                    const data = d.data();
+                    const existing = traineesData.find(t => t.id === d.id);
+                    if (existing) {
+                        data.awalText = existing.awalText || data.awalText || '';
+                        data.awalFeedback = existing.awalFeedback || data.awalFeedback || '';
+                        data.akhirText = existing.akhirText || data.akhirText || '';
+                        data.akhirTerlewat = existing.akhirTerlewat || data.akhirTerlewat || '';
+                        data.akhirCaptainNotes = existing.akhirCaptainNotes || data.akhirCaptainNotes || '';
+                        data.customAnswers = { ...(data.customAnswers || {}), ...(existing.customAnswers || {}) };
+                    }
+                    list.push({ id: d.id, ...data });
+                });
+                traineesData = list;
+
+                populateSelectors(true);
+                renderLiveSubmissionGrid();
+                renderAdminMasterLists();
+                refreshFirebaseStats();
+            }, err => console.error("Trainees sync error:", err));
+
+            // REALTIME SYNC DAILY REPORTS LOGS
+            const reportsRef = collection(db, 'artifacts', appId, 'public', 'data', 'dailyReports');
+            onSnapshot(reportsRef, (snap) => {
+                const logs = [];
+                snap.forEach(d => logs.push({ id: d.id, ...d.data() }));
+                dailyReportsData = logs;
+                
+                renderLiveSubmissionGrid();
+                if (activeMainView === 'dashboard') {
+                    renderDailyReportsLog();
+                    renderAnalyticsDashboard();
+                }
+                refreshFirebaseStats();
+            }, err => console.error("Daily reports sync error:", err));
+
+            // REALTIME SYNC OUTLETS
+            const outletsDoc = doc(db, 'artifacts', appId, 'public', 'data', 'config', 'outlets');
+            onSnapshot(outletsDoc, (snap) => {
+                if (snap.exists() && Array.isArray(snap.data().list)) {
+                    outletsData = snap.data().list;
+                }
+                populateSelectors(true);
+                renderAdminMasterLists();
+                refreshFirebaseStats();
+            }, err => console.error("Outlets sync error:", err));
+
+            // REALTIME SYNC CAPTAINS
+            const captainsDoc = doc(db, 'artifacts', appId, 'public', 'data', 'config', 'captains');
+            onSnapshot(captainsDoc, (snap) => {
+                if (snap.exists() && Array.isArray(snap.data().list)) {
+                    captainsData = snap.data().list;
+                }
+                populateSelectors(true);
+                renderAdminMasterLists();
+            }, err => console.error("Captains sync error:", err));
+
+            // REALTIME SYNC WA NUMBERS
+            const waDoc = doc(db, 'artifacts', appId, 'public', 'data', 'config', 'waNumbers');
+            onSnapshot(waDoc, (snap) => {
+                if (snap.exists() && Array.isArray(snap.data().list)) {
+                    waNumbersData = snap.data().list;
+                }
+                populateSelectors(true);
+                renderAdminMasterLists();
+            }, err => console.error("WA sync error:", err));
+
+            // REALTIME SYNC GROOMING OPTIONS
+            const groomingDoc = doc(db, 'artifacts', appId, 'public', 'data', 'config', 'groomingOptions');
+            onSnapshot(groomingDoc, (snap) => {
+                if (snap.exists() && Array.isArray(snap.data().list)) {
+                    groomingOptionsData = snap.data().list;
+                }
+                populateSelectors(true);
+                renderAdminMasterLists();
+            }, err => console.error("Grooming sync error:", err));
+
+            // REALTIME SYNC CUSTOM QUESTIONS
+            const customQDoc = doc(db, 'artifacts', appId, 'public', 'data', 'config', 'customQuestions');
+            onSnapshot(customQDoc, (snap) => {
+                if (snap.exists() && Array.isArray(snap.data().list)) {
+                    customQuestionsData = snap.data().list;
+                    renderCustomQuestionsContainers();
+                    renderAdminMasterLists();
+                }
+            }, err => console.error("Custom Q sync error:", err));
+
+            // REALTIME SYNC RUNNING BANNER
+            const bannerDoc = doc(db, 'artifacts', appId, 'public', 'data', 'config', 'banner');
+            onSnapshot(bannerDoc, (snap) => {
+                if (snap.exists() && snap.data().text) {
+                    const text = snap.data().text;
+                    document.getElementById('running-banner-text').textContent = text;
+                    const input = document.getElementById('input-banner-text');
+                    if (input && document.activeElement !== input) input.value = text;
+                }
+            }, err => console.error("Banner sync error:", err));
+        }
+
+        window.onload = function() {
+            populateSelectors(false);
+            updateRealtimeClock();
+            renderLiveSubmissionGrid();
+            renderCustomQuestionsContainers();
+            setInterval(updateRealtimeClock, 1000);
+
+            const now = new Date();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            const timeStr = `${hh}:${mm}`;
+
+            const elTimeAwal = document.getElementById('awal-time');
+            const elTimeAkhir = document.getElementById('akhir-time');
+            if (elTimeAwal) elTimeAwal.value = timeStr;
+            if (elTimeAkhir) elTimeAkhir.value = timeStr;
+
+            const today = getTodayString();
+            const startOfMonth = today.substring(0, 8) + '01';
+            const logStartInput = document.getElementById('filter-log-start');
+            const logEndInput = document.getElementById('filter-log-end');
+            if (logStartInput) logStartInput.value = startOfMonth;
+            if (logEndInput) logEndInput.value = today;
+
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                
+                const customToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                if (customToken) {
+                    signInWithCustomToken(auth, customToken)
+                        .then(() => setupFirestoreRealtimeListeners())
+                        .catch(() => signInAnonymously(auth).then(() => setupFirestoreRealtimeListeners()));
+                } else {
+                    signInAnonymously(auth)
+                        .then(() => setupFirestoreRealtimeListeners())
+                        .catch(e => console.error("Auth fallback note:", e));
+                }
+            } catch (e) {
+                console.error("Firebase init note:", e);
+            }
+        };
+    </script>
+</body>
+</html>
